@@ -156,7 +156,7 @@ $config['auth_library_function'] = '';
   |	array('admin' => '1234')
   |
  */
-$config['rest_valid_logins'] = array('admin' => '1234');
+$config['rest_valid_logins'] = array();
 
 /*
   |--------------------------------------------------------------------------
@@ -173,7 +173,7 @@ $config['rest_valid_logins'] = array('admin' => '1234');
   |	 restrict certain methods to IPs in your whitelist
   |
  */
-$config['rest_ip_whitelist_enabled'] = TRUE;
+$config['rest_ip_whitelist_enabled'] = false;
 
 /*
   |--------------------------------------------------------------------------
