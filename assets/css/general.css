@@ -1,0 +1,135 @@
+/*
+ loading modal by nanda 2013/10/04
+ usage: 
+
+<div id="loading" class="modal active hide" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+	<div class="spinner"></div>
+	<div class="div-notif">
+		<span id="notif" class="label label-important">Tunggu sebentar...</span>
+	</div>
+</div>
+$("#loading").modal('show');//menampilkan loading screen
+$("#loading").modal('hide');//menyembunyikan loading screen
+*/
+
+#loading{
+	background-color: transparent;
+	border: none;
+	box-shadow: none;
+	clear: both;
+}
+#loading > .spinner{
+	background: transparent url('../img/spinner-128.gif') 0 0 no-repeat;
+	text-align: center;
+	position: relative;
+	margin-left: 50%;
+	left: -64px;
+	width: 128px;
+	height: 128px;
+}
+#loading > .div-notif{
+	text-align: center;
+	position: relative;
+	padding-top: 10px;
+}
+div.small-loading-bar{
+	background: transparent url('../img/loading-bar-19x15.gif') center 5px no-repeat;
+	display: inline-block;
+	height: 25px;
+	text-align: center;
+	vertical-align: middle;
+	width: 100%;
+}
+div.small-spinner{
+	background: transparent url('../img/spinner-20.gif') 0 0 no-repeat;
+	display: inline-block;
+	height: 20px;
+	text-align: center;
+	vertical-align: middle;
+	width: 20px;
+}
+	div.small-spinner.spinner-white{
+		background: transparent url('../img/spinner-white-20.gif') 0 0 no-repeat;
+	}
+
+p#notifTeks{
+	font-size: 1.2em;
+}
+
+.legend{
+	color: #777;
+}
+/* wrapper */
+div.form-wrapper{
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+}
+div#wrapperReadonly{
+	display: none;
+	height: 100%;
+	width: 100%;
+	right: 0;
+	background: transparent;
+	background: rgba(255, 255, 255, 0.4);
+	position: absolute;
+	z-index: 999;
+}
+
+.subheader{
+	vertical-align: middle;
+	padding-top: 10px;
+	text-align: right;
+}
+	.blinker {
+		color: #6D0000;
+		font-family: "Trebuchet MS", Helvetica, sans-serif !important;
+		font-weight: bold;
+		font-size: 16px;
+		text-align: center;
+
+		animation-name: blinker;
+		animation-duration: 4s;
+		animation-timing-function: linear;
+		animation-iteration-count: infinite;
+
+		-webkit-animation-name: blinker;
+		-webkit-animation-duration: 4s;
+		-webkit-animation-timing-function: linear;
+		-webkit-animation-iteration-count: infinite;
+	}
+
+	@-moz-keyframes blinker {
+		0% { opacity: 1.0; }
+		50% { opacity: 0.2; }
+		100% { opacity: 1.0; }
+	}
+
+	@-webkit-keyframes blinker {
+		0% { opacity: 1.0; }
+		50% { opacity: 0.2; }
+		100% { opacity: 1.0; }
+	}
+
+	@keyframes blinker {
+		0% { opacity: 1.0; }
+		50% { opacity: 0.2; }
+		100% { opacity: 1.0; }
+	}
+
+div.modal.bootbox {
+	font-size: 12px;
+	line-height: normal;
+	text-align: center;
+}
+	div.modal.bootbox > div.modal-footer{
+		font-weight: bold;
+		text-align: center;
+	}
+	div.modal.bootbox.fade{
+		-webkit-transition: opacity .1s linear;
+		-moz-transition: opacity .1s linear;
+		-ms-transition: opacity .1s linear;
+		-o-transition: opacity .1s linear;
+		transition: opacity .1s linear;
+	}

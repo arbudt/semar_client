@@ -1,0 +1,205 @@
+/*
+  Global CSS file untuk Transaksi Farmasi
+*/
+
+.alert{
+	line-height: 24px;
+	position: fixed;
+	width: 89%;
+	z-index: 10;
+	opacity: 0.95;
+}
+h4{
+	margin: 0 0 15px 0;
+}
+button > i[class^="icon-"]{
+	vertical-align: text-bottom;
+}
+.control-aksi{
+	padding: 10px 0;
+}
+.modalContainer{
+	width: 100%;
+}
+.one-liner{
+	/*display: inline-block;*/
+	white-space: nowrap;
+}
+.select2-choice {
+	height: 20px !important;
+	line-height: 20px !important;
+}
+.sembunyi{
+	display: none;
+}
+.subheader{
+	margin: 5px 0;
+	width: 100%;
+}
+.title{
+	vertical-align: middle;
+	min-width: 40%;
+}
+.well{
+	padding: 5px;
+	margin-bottom: 5px;
+}
+.divScrollX{
+	overflow-x: scroll;
+}
+.divScrollY{
+	overflow-y: scroll;
+}
+div.date.lining > span.add-on, div.date.lining > span.add-on > i[class^="icon-"], [class*=" icon-"]{
+	margin-top: 0;
+}
+div.dataTables_wrapper > div.row-fluid{
+	margin-top: 5px;
+}
+label,
+.handsontable table td{
+	white-space: nowrap;
+}
+.handsontable .currentRow {
+	background-color: #E7E8EF;
+}
+
+/* width */
+.modal-extra-width{
+	left: 30%;
+	width: 80%;
+}
+select.input-medium,
+div.input-medium{
+	width: 160px;
+}
+select.input-large,
+div.input-large{
+	width: 220px;
+}
+.input-3{
+	padding: 0;
+	width: 20px;
+}
+.input-4{
+	padding: 0;
+	width: 26px;
+}
+.w15-1{
+	width:15px;
+}
+.w15-2{
+	width:30px;
+}
+.w15-3{
+	width:45px;
+}
+.w15-4{
+	width:60px;
+}
+.w15-5{
+	width:75px;
+}
+.w15-6{
+	width:90px;
+}
+.w15-7{
+	width:105px;
+}
+.wp-100{
+	margin-left: 0;
+	margin-right: 0;
+	width: 100%;
+}
+.wp-70{
+	margin-left: 0;
+	margin-right: 0;
+	width: 70%;
+}
+
+/* table */
+td{
+	padding: 0 2px 3px 2px;
+	/*vertical-align: top;*/
+}
+td.title{
+	width: auto;
+}
+.table-centered th{
+	padding: 4px;
+	text-align: center;
+	vertical-align: middle;
+}
+.table-centered td{
+	padding: 4px;
+	text-align: center;
+}
+.table thead th {
+	text-align: center;
+	vertical-align: middle;
+}
+td.cell-center{
+	text-align: center;
+}
+td.cell-right{
+	text-align: right;
+}
+tr.border-top td {
+	border-top:1px solid black;
+	padding-top: 4px;
+}
+td.readonly{
+	/*background-color: #f0f0f0;*/
+	color: #555
+}
+
+/* handsontable custom styles*/
+.handsontable .hot-current-row{
+	background-color: #e8ffd2;
+	font-weight: bold;
+}
+table.htCore td.htDimmed {
+	cursor: default;
+}
+
+/* formating input field */
+input.currency{
+	text-align: right;
+}
+
+/* transparent modal backdrop */
+
+/*.modal-backdrop {
+	opacity: 0;
+}*/
+
+div.wrapper-judul{
+	background-color: #333;
+	color: #FFF;
+	margin: 0px;
+	text-align: left;
+	/*padding: 10px;*/
+}
+h4.judul{
+	display: inline-block;
+	margin: 10px;
+	/*text-align: center;*/
+	padding: 0px;
+}
+div.wrapper-judul > button{
+	margin: 5px;
+}
+
+/* ---- Container preview laporan --- */
+.preview-container {
+	background-color: #DDD;
+}
+.paper-container {
+	background-color: #FFF;
+	padding: 10px;
+	margin: 20px;
+	border: 1px;
+	-webkit-box-shadow: 0 -10px 6px -6px #777;
+	   -moz-box-shadow: 0 -10px 6px -6px #777;
+	        box-shadow: 0 -10px 6px -6px #777;
+}

@@ -1,0 +1,12 @@
+select#tablePagination_rowsPerPage {
+    width: 60px;
+}
+span#tablePagination_perPage {
+    margin-right: 8px;
+}
+input#tablePagination_currPage {
+    width: 25px;
+}
+#tablePagination_prevPage, #tablePagination_lastPage {
+    margin-left: 5px;
+}

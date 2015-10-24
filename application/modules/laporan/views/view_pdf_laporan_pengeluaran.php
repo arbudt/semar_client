@@ -1,0 +1,169 @@
+<?php
+$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+// set document information
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('');
+$pdf->SetTitle('Laporan Pengeluaran');
+$pdf->SetSubject('Laporan Pengeluaran');
+$pdf->SetKeywords('Laporan Pengeluaran');
+// set default header data
+//$pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
+//$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+//$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+// set default monospaced font
+$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+// set margins
+$pdf->SetMargins(5, 10, 5, TRUE);
+//$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+//$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
+// set auto page breaks
+$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+// set image scale factor
+$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+// set some language-dependent strings (optional)
+if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
+    require_once(dirname(__FILE__) . '/lang/eng.php');
+}
+// ---------------------------------------------------------   
+// set default font subsetting mode
+$pdf->setFontSubsetting(true);
+// Set font
+// dejavusans is a UTF-8 Unicode font, if you only need to
+// print standard ASCII chars, you can use core fonts like
+// helvetica or times to reduce file size.
+$pdf->SetFont('times', '', 11, '', 'false');
+// Add a page
+// This method has several options, check the source code documentation for more information.
+$pdf->AddPage('P', 'A4');
+// set text shadow effect
+ob_start();
+?>
+<style>
+    .bottomBorder{
+        border-bottom-style: solid;
+    }
+    .cellHeader{
+        text-align: center;
+        font-weight: bold;
+    }
+    .cellBorder{
+        border-left-style: solid;
+        border-top-style: solid;
+        border-right-style: solid;
+        border-bottom-style: solid;
+    }
+</style>
+<table border="0" cellpadding="2">
+    <thead>
+        <tr>
+            <td colspan="5" style="text-align: center;"><h4><?php echo!empty($dataCetak['TITLE']) ? $dataCetak['TITLE'] : ''; ?></h4></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="width: 140px;">Nama Sekolah</td>
+            <td colspan="3">: <?php echo!empty($dataCetak['NAMA_SEKOLAH']) ? $dataCetak['NAMA_SEKOLAH'] : ''; ?></td>
+        </tr>
+        <tr>
+            <td colspan="2">Desa/kelurahan</td>
+            <td colspan="3">: <?php
+echo!empty($dataCetak['KELURAHAN']) ? $dataCetak['KELURAHAN'] : '';
+echo ' / ';
+echo!empty($dataCetak['KECAMATAN']) ? $dataCetak['KECAMATAN'] : '';
+?>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">Kabupaten</td>
+            <td colspan="3">: <?php echo!empty($dataCetak['KABUPATEN']) ? $dataCetak['KABUPATEN'] : ''; ?></td>
+        </tr>
+        <tr>
+            <td colspan="2">Propinsi</td>
+            <td colspan="3">: <?php echo!empty($dataCetak['PROVINSI']) ? $dataCetak['PROVINSI'] : ''; ?></td>
+        </tr>
+        <tr>
+            <td colspan="5">&nbsp;</td>
+        </tr>
+        <tr style="background-color: #A3CCD8;  font-weight: bold; text-align: center">
+            <th class="cellBorder" style="width: 40px;">No</th>
+            <th class="cellBorder" style="width: 90px;">Tanggal</th>
+            <th class="cellBorder" style="width: 250px;">Nama Guru</th>
+            <th class="cellBorder" style="width: 100px;">Tugas</th>
+            <th class="cellBorder" style="width: 100px;">Jumlah (Rp)</th>
+            <th class="cellBorder" style="width: 120px;">Keterangan</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        $totalUang = 0;
+        if (!empty($dataDetail)) {
+            $no = 0;
+            foreach ($dataDetail as $row) {
+                $no++;
+                $totalUang += intval($row->JUMLAH);
+                $strRow = '';
+                $strRow .= '<tr>';
+                $strRow .= '<td class="cellBorder" style="text-align: center; width: 40px;">' . $no . '</td>';
+                $strRow .= '<td class="cellBorder" style="width: 90px;">' . $row->TGL . '</td>';
+                $strRow .= '<td class="cellBorder" style="width: 250px;">' . $row->NAMA_GURU . '</td>';
+                $strRow .= '<td class="cellBorder" style="width: 100px;">' . $row->TUGAS . '</td>';
+                $strRow .= '<td class="cellBorder" style="text-align: right; width: 100px;">' . number_format($row->JUMLAH, 2) . '</td>';
+                $strRow .= '<td class="cellBorder" style="width: 120px;"></td>';
+                $strRow .= '</tr>';
+                echo $strRow;
+            }
+        }
+        $strRow = '';
+        $strRow .= '<tr style="background-color: #A3CCD8; font-weight: bold">';
+        $strRow .= '<td class="cellBorder" colspan="4" style="text-align: right; width: 480px;">TOTAL</td>';
+        $strRow .= '<td class="cellBorder" style="text-align: right; width: 100px;">' . number_format($totalUang, 2) . '</td>';
+        $strRow .= '<td class="cellBorder" style="width: 120px;"></td>';
+        $strRow .= '</tr>';
+        echo $strRow;
+        ?>
+    </tbody>
+</table>    
+
+<br/>
+<br/>
+<table border="0" cellpadding="2">
+    <tbody>
+        <tr style="text-align: center">
+            <td style="width: 10%"></td>
+            <td style="width: 30%">
+                Mengetahui
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <?php echo!empty($dataCetak['NAMA_KETUA']) ? $dataCetak['NAMA_KETUA'] : '(.......................................................)'; ?>
+                <br/>
+                <?php echo!empty($dataCetak['NIP_KETUA']) ? $dataCetak['NIP_KETUA'] : ''; ?>
+            </td>
+            <td style="width: 20%"></td>
+            <td style="width: 30%">
+                Bendahara
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <?php echo!empty($dataCetak['NAMA_BENDAHARA']) ? $dataCetak['NAMA_BENDAHARA'] : '(.......................................................)'; ?>
+                <br/>
+                <?php echo!empty($dataCetak['NIP_BENDAHARA']) ? $dataCetak['NIP_BENDAHARA'] : ''; ?>
+            </td>
+            <td style="width: 10%"></td>
+        </tr>
+    </tbody>
+</table>
+
+<?php
+$content = ob_get_contents();
+ob_end_clean();
+// Print text using writeHTMLCell()
+$pdf->writeHTMLCell(0, 0, '', '', $content, 0, 1, 0, true, '', true);
+// ---------------------------------------------------------   
+// Close and output PDF document
+// This method has several options, check the source code documentation for more information.
+$pdf->Output('Laporan_pengeluaran.pdf', 'I');
+?>
