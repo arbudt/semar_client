@@ -31,17 +31,17 @@
                     </tr>
                     <tr>
                         <td class="labelField">Nama Pasien</td>
-                        <td><input type="text" name="namaPasien" id="namaPasien" value="" class="namaPasien" required /></td>
+                        <td><input type="text" name="namaPasien" id="namaPasien" value="" class="namaPasien" readonly /></td>
                     </tr>
                     <tr>
                         <td class="labelField">Tempat Lahir</td>
-                        <td><input type="text" name="tempatLahir" id="tempatLahir" value="" class="tempatLahir" required /></td>
+                        <td><input type="text" name="tempatLahir" id="tempatLahir" value="" class="tempatLahir" readonly /></td>
                     </tr>
                     <tr>
                         <td class="labelField">Tanggal Lahir</td>
                         <td>
                             <div id="datePickerTanggal" class="input-append date">
-                                <input class="input input-small" data-format="dd-MM-yyyy" type="text" name="tanggalLahir" id="tanggalLahir" value="<?php echo tglSekarang(); ?>" required>
+                                <input class="input input-small" data-format="dd-MM-yyyy" type="text" name="tanggalLahir" id="tanggalLahir" value="<?php echo tglSekarang(); ?>" readonly>
                                 <span class="add-on">
                                     <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
                                 </span>
@@ -50,70 +50,50 @@
                     </tr>
                     <tr>
                         <td class="labelField">Jenis Kelamin</td>
-                        <td><?php dropDownJeniskelamin('name="jenisKelamin" id="jenisKelamin" class="jenisKelamin" required'); ?></td>
-                    </tr>
-                    <tr>
-                        <td class="labelField">Status Perkawinan</td>
-                        <td><?php dropDownStatusKawin('name="statusKawin" id="statusKawin" class="statusKawin" required'); ?></td>
-                    </tr>
-                    <tr>
-                        <td class="labelField">Agama</td>
-                        <td><?php dropDownAgama('name="agama" id="agama" class="agama" required'); ?></td>
+                        <td><?php dropDownJeniskelamin('name="jenisKelamin" id="jenisKelamin" class="jenisKelamin" readonly'); ?></td>
                     </tr>
                     <tr>
                         <td class="labelField">Golongan Darah</td>
-                        <td><?php dropDownGolonganDarah('name="golonganDarah" id="golonganDarah" class="golonganDarah" required'); ?></td>
+                        <td><?php dropDownGolonganDarah('name="golonganDarah" id="golonganDarah" class="golonganDarah" readonly'); ?></td>
                     </tr>
                     <tr>
-                        <td class="labelField">No Telp</td>
-                        <td><input type="text" name="noTelepon" id="noTelepon" value="" class="noTelepon" data-rule-number required /></td>
-                    </tr>
-                    <tr>
-                        <td class="labelField">No Identitas</td>
-                        <td><input type="text" name="noIdentitas" id="noIdentitas" class="noIdentitas" value="" required/></td>
+                        <td class="labelField">Alergi</td>
+                        <td><textarea name="alergi" id="alergi" class="alergi uraian" readonly></textarea></td>
                     </tr>
                 </table>
             </div>
             <div class="span6">
                 <table>
-
                     <tr>
-                        <td class="labelField">Propinsi</td>
-                        <td><?php dropDownPropinsi('name="propinsi" id="propinsi" class="propinsi" required'); ?></td>
+                        <td class="labelField">Poliklinik</td>
+                        <td><?php dropDownPoli('name="poli" id="poli" class="poli" required'); ?></td>
                     </tr>
                     <tr>
-                        <td class="labelField">Kabupaten</td>
+                        <td class="labelField">Tanggal Periksa</td>
                         <td>
-                            <select name="kabupaten" id="kabupaten" class="kabupaten" required><option value="">...</option></select>
+                            <div id="datePickerTanggalPeriksa" class="input-append date">
+                                <input class="input input-small" data-format="dd-MM-yyyy" type="text" name="tanggalPeriksa" id="tanggalPeriksa" value="<?php echo tglSekarang(); ?>" readonly>
+                                <span class="add-on">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                </span>
+                            </div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="labelField">Kecamatan</td>
-                        <td>
-                            <select name="kecamatan" id="kecamatan" class="kecamatan" required><option value="">...</option></select>
-                        </td>
+                        <td class="labelField">Dokter</td>
+                        <td><?php dropDownDokter('name="dokter" id="dokter" class="dokter"'); ?></td>
                     </tr>
                     <tr>
-                        <td class="labelField">Kelurahan</td>
-                        <td>
-                            <select name="kelurahan" id="kelurahan" class="kelurahan" required><option value="">...</option></select>
-                        </td>
+                        <td class="labelField">Cara Bayar</td>
+                        <td><?php dropDownDokter('name="caraBayar" id="caraBayar" class="caraBayar" required'); ?></td>
                     </tr>
                     <tr>
-                        <td class="labelField">Alamat</td>
-                        <td><textarea name="alamat" id="alamat" class="alamat uraian" required></textarea></td>
+                        <td class="labelField">No Peserta</td>
+                        <td><input type="text" name="noPeserta" id="noPeserta" value="" class="noPeserta" /></td>
                     </tr>
                     <tr>
-                        <td class="labelField">Pendidikan</td>
-                        <td><?php dropDownPendidikan('name="pendidikan" id="pendidikan" class="pendidikan" required'); ?></td>
-                    </tr>
-                    <tr>
-                        <td class="labelField">Pekerjaan</td>
-                        <td><?php dropDownPekerjaan('name="pekerjaan" id="pekerjaan" class="pekerjaan" required'); ?></td>
-                    </tr>
-                    <tr>
-                        <td class="labelField">Alergi</td>
-                        <td><textarea name="alergi" id="alergi" class="alergi uraian" required></textarea></td>
+                        <td class="labelField">Keterangan</td>
+                        <td><textarea name="keterangan" id="keterangan" class="keterangan uraian"></textarea></td>
                     </tr>
                 </table>
             </div>
@@ -138,6 +118,15 @@
             autoclose: true
         });
     
+        $(document).on('focus', '#tanggal', function() {
+            $(this).mask("99-99-9999");
+        });
+
+        $('#datePickerTanggal').datetimepicker({
+            language: 'pt-BR',
+            autoclose: true
+        });
+
         $(document).on('focus', '#tanggal', function() {
             $(this).mask("99-99-9999");
         });

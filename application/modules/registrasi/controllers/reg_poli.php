@@ -3,25 +3,25 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Reg_pasien extends MY_Controller {
+class Reg_poli extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model('registrasi/reg_pasien_model');
+        $this->load->model(
+                'registrasi/reg_pasien_model',
+                'registrasi/reg_poli_model'
+        );
     }
 
     function index() {
 //        $data['previlages'] = $this->previlages;
-        $data['page'] = 'registrasi/view_reg_pasien';
-        $data['menuTitle'] = 'Pendaftaran Pasien';
-        $data['menuDescription'] = 'Pendaftaran data pasien';
+        $data['page'] = 'registrasi/view_reg_poli';
+        $data['menuTitle'] = 'Pendaftaran Poli';
+        $data['menuDescription'] = 'Pendaftaran kunjungan poli';
 
         $this->load->view('template', $data);
     }
 
-    /*
-     *
-     */
 
     public function get_options_kabupaten_by_prop() {
 
@@ -281,11 +281,11 @@ class Reg_pasien extends MY_Controller {
         echo json_encode($data);
     }
 
-    public function data_test(){
+    public function data_test() {
         echo 'sukses';
     }
 
-    public function test(){
+    public function test() {
         echo dropDownTest();
     }
 

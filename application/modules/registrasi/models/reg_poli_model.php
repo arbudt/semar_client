@@ -1,18 +1,18 @@
 <?php
 
-class Reg_pasien_model extends MY_Model {
+class Reg_poli_model extends MY_Model {
 
     function __construct() {
         parent::__construct();
     }
 
-    function getDataStatusKawin() {
+    function getDataPoli() {
         $query = $this->db->query("
             SELECT
-            `rsk_id` AS kode,
-            `rsk_nama` AS nama
-            FROM  ref_status_kawin
-            WHERE rsk_isaktif = '1'
+            `mpoli_id` AS kode,
+            `mpoli_nama` AS nama
+            FROM `mst_poli`
+            WHERE `mpoli_isaktif` = '1'
             ");
         if ($query->num_rows() > 0) {
             return $query->result();
@@ -21,13 +21,12 @@ class Reg_pasien_model extends MY_Model {
         }
     }
 
-    function getDataGolonganDarah() {
+    function getDataDokter() {
         $query = $this->db->query("
             SELECT
-            `rgd_id` AS kode,
-            `rgd_id` AS nama
-             FROM `ref_golongan_darah`
-            WHERE `rgd_isaktif` = '1'
+            `mdok_id` AS kode,
+            concat(`mdok_gelar_depan`,' ', `mdok_nama`,' ',`mdok_gelar_belang`) AS nama
+            FROM `mst_dokter`
             ");
         if ($query->num_rows() > 0) {
             return $query->result();
@@ -36,12 +35,13 @@ class Reg_pasien_model extends MY_Model {
         }
     }
 
-    function getDataAgama() {
+    function getDataCaraBayar() {
         $query = $this->db->query("
             SELECT
-            `rag_id` AS kode,
-            `rag_nama` AS nama
-             FROM `ref_agama` WHERE `rag_isaktif` ='1'
+            `mcb_id` AS kode,
+             `mcb_nama` AS nama
+            FROM `mst_cara_bayar`
+            WHERE `mcb_isaktif` = '1'
                         ");
         if ($query->num_rows() > 0) {
             return $query->result();
