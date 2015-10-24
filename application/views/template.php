@@ -109,10 +109,10 @@
     </script>
     <!-- header -->
     <div class="navbar navbar navbar-fixed-top">
-        <div class="btn-info" style="min-height: 50px !important;">
+        <div class="btn-info" style="min-height: 60px !important;">
             <div class="row-fluid" style="text-align: center">
                 <div class="span12">
-                    <h4>SISTEM RUMAH SAKIT A</h4>
+                    <h4>RUMAH SAKIT</h4>
                 </div>
             </div>
         </div>
@@ -174,7 +174,7 @@
                 </div>
 
                 <!-- body -->
-                <div class="container" style="min-height: 380px; margin-top: 60px">
+                <div class="container" style="min-height: 380px; margin-top: 30px">
                     <div class="row-fluid">
                         <div class="span12">
                     <?php

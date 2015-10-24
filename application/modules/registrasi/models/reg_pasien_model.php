@@ -39,11 +39,10 @@ class Reg_pasien_model extends MY_Model {
     function getDataAgama() {
         $query = $this->db->query("
             SELECT
-            `rgd_id` AS kode,
-            `rgd_id` AS nama
-             FROM `ref_golongan_darah`
-            WHERE `rgd_isaktif` = '1'
-            ");
+            `rag_id` AS kode,
+            `rag_nama` AS nama
+             FROM `ref_agama` WHERE `rag_isaktif` ='1'
+                        ");
         if ($query->num_rows() > 0) {
             return $query->result();
         } else {
@@ -84,10 +83,9 @@ class Reg_pasien_model extends MY_Model {
     function getDataPekerjaan() {
         $query = $this->db->query("
             SELECT
-            `rpend_id` AS kode,
-            `rpend_nama` AS nama
-            FROM `ref_pendidikan`
-             WHERE `rpend_isaktif` = '1'
+            `rpek_id` AS kode,
+            `rpek_nama` AS nama
+            FROM `ref_pekerjaan` WHERE `rpek_isaktif` = '1'
             ");
         if ($query->num_rows() > 0) {
             return $query->result();
@@ -112,6 +110,38 @@ class Reg_pasien_model extends MY_Model {
         }
     }
 
+    function getDataKecamatanBykab($id) {
+        $query = $this->db->query("
+            SELECT
+            `rkec_id` AS kode,
+            `rkec_nama` AS nama
+            FROM `ref_kecamatan`
+            WHERE `rkec_isaktif` = '1'
+            AND `rkab_id` = '$id'
+                        ");
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return NULL;
+        }
+    }
+
+    function getDataKelurahanBykec($id) {
+        $query = $this->db->query("
+            SELECT
+            `rkel_id` AS kode,
+            `rkel_nama` AS nama
+            FROM `ref_kelurahan`
+            WHERE `rkel_isaktif` = '1'
+            AND `rkec_id` = '$id'
+                        ");
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return NULL;
+        }
+    }
+
     function tableDescription($tableName) {
         $query = $this->db->query("
         describe $tableName
@@ -124,136 +154,32 @@ class Reg_pasien_model extends MY_Model {
     }
 
     /*
-     * mengambil data options triwulan
-     */
-
-    function dataTriwulanAll() {
-        $query = $this->db->query("
-        SELECT 
-        triwulan_code kode,
-        triwulan_name nama 
-        FROM master_triwulan
-        WHERE triwulan_aktif = '1'
-        ");
-        if ($query->num_rows() > 0) {
-            return $query->result();
-        } else {
-            return NULL;
-        }
-    }
-
-    /*
-     * mengambil data options tahun ajaran
-     */
-
-    function dataTahunAjaran() {
-        $query = $this->db->query("
-        SELECT 
-        tahun_code kode,
-        tahun_name nama
-        FROM master_tahun 
-        ORDER BY tahun_name desc
-        ");
-        if ($query->num_rows() > 0) {
-            return $query->result();
-        } else {
-            return NULL;
-        }
-    }
-
-    /*
-     * mengambil data sumber data bos
-     */
-
-    function dataSumberDataBos() {
-        $query = $this->db->query("
-            SELECT 
-            donatur_code kode,
-            donatur_name nama
-            FROM master_donatur
-            WHERE donatur_aktif = '1'
-            AND donatur_parent IN(
-                    SELECT donatur_code 
-                    FROM master_donatur
-                    WHERE donatur_aktif = '1'
-                    AND donatur_parent = '10'
-            )    
-        ");
-        if ($query->num_rows() > 0) {
-            return $query->result();
-        } else {
-            return NULL;
-        }
-    }
-
-    /*
-     * mengambil data sumber data bos
-     */
-
-    function dataSumberDataBosByParent($kodeParent) {
-        $query = $this->db->query("
-            SELECT 
-            donatur_code kode,
-            donatur_name nama
-            FROM master_donatur
-            WHERE donatur_aktif = '1'
-            AND donatur_parent = '$kodeParent'
-        ");
-        if ($query->num_rows() > 0) {
-            return $query->result();
-        } else {
-            return NULL;
-        }
-    }
-
-    /*
-     * cek sudah ada penerimaan dana bos
-     */
-
-    function cekSudahAdaDataBos($tahun, $triwulan, $sumberBos) {
-        $query = $this->db->query("
-            SELECT
-            A.k1_code ID_TRANS
-            FROM trans_k1 A
-            WHERE A.k1_tahun_code = '$tahun'
-            AND A.k1_triwulan_code = '$triwulan'
-            AND A.k1_donatur_code = '$sumberBos'
-            AND A.k1_status = 0
-        ");
-        if ($query->num_rows() > 0) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-
-    /*
      * simpan transaksi
      */
 
     function simpanData($data) {
         $result = array(
             'status' => FALSE,
-            'idTrans' => NULL
+            'mpas_id' => NULL
         );
-        if (!empty($data['k1_code'])) {
-            $this->db->set('k1_last_update', 'now()', FALSE);
-            $this->db->where('k1_code', $data['k1_code']);
-            $this->db->update('trans_k1', $data);
+        if (!empty($data['mpas_id'])) {
+//            $this->db->set('k1_last_update', 'now()', FALSE);
+            $this->db->where('mpas_id', $data['mpas_id']);
+            $this->db->update('mst_pasien', $data);
         } else {
-            $this->db->set('k1_last_update', 'now()', FALSE);
-            $this->db->insert('trans_k1', $data);
+//            $this->db->set('k1_last_update', 'now()', FALSE);
+            $this->db->insert('mst_pasien', $data);
         }
         if ($this->db->affected_rows() > 0) {
             $result['status'] = TRUE;
-            if (!empty($data['k1_code'])) {
-                $result['idTrans'] = $data['k1_code'];
+            if (!empty($data['mpas_id'])) {
+                $result['mpas_id'] = $data['mpas_id'];
             } else {
                 $querySelect = $this->db->query("
-                SELECT max(k1_code) id FROM trans_k1    
+                SELECT max(mpas_id) id FROM mst_pasien
                 ");
                 if ($querySelect->num_rows() > 0) {
-                    $result['idTrans'] = $querySelect->row()->id;
+                    $result['mpas_id'] = $querySelect->row()->id;
                 }
             }
         }
@@ -295,26 +221,15 @@ class Reg_pasien_model extends MY_Model {
     }
 
     /*
-     * mengambil transaksi by id transaksi
+     * mengambil data by id
      */
 
-    function dataTransById($idTrans) {
+    function dataPasienByDd($id) {
         $query = $this->db->query("
-            SELECT 
-            k1_code ID_TRANS,
-            k1_tahun_code KODE_TAHUN,
-            k1_triwulan_code KODE_TRIWULAN,
-            k1_donatur_code KODE_SUMBER_DANA,
-            k1_nns NSS,
-            k1_jumlah_siswa JUMLAH_SISWA,
-            k1_uang_per_siswa UANG_PER_SISWA,
-            DATE_FORMAT(k1_date, '%d-%m-%Y') TGL,
-            k1_no_urut NO_URUT_TERIMA,
-            k1_no_kode NO_KODE_TERIMA,
-            k1_uraian URAIAN_TERIMA,
-            k1_uang_terima UANG_TERIMA
-            FROM trans_k1
-            WHERE k1_code = '$idTrans'
+            SELECT
+            *
+            FROM `mst_pasien`
+            WHERE `mpas_id` = '$id'
         ");
         if ($query->num_rows() > 0) {
             return $query->row();
@@ -324,4 +239,3 @@ class Reg_pasien_model extends MY_Model {
     }
 
 }
-?>

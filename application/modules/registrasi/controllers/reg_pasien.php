@@ -20,11 +20,15 @@ class Reg_pasien extends MY_Controller {
         $this->load->view('template', $data);
     }
 
+    /*
+     *
+     */
+
     public function get_options_kabupaten_by_prop() {
-        
+
         $respon = '';
         if (!empty($_POST['kode'])) {
-            
+
             $respon = $this->options_kabupaten_by_prop($_POST['kode']);
         } else {
             $respon = '<option value="">...nul</option>';
@@ -33,7 +37,7 @@ class Reg_pasien extends MY_Controller {
     }
 
     /*
-     * options dokter by ksm
+     * data kabupaten
      */
 
     function options_kabupaten_by_prop($idPropinsi) {
@@ -58,13 +62,87 @@ class Reg_pasien extends MY_Controller {
         return $respon;
     }
 
+    public function get_options_kecamatan_by_kab() {
+        $respon = '';
+        if (!empty($_POST['kode'])) {
+
+            $respon = $this->options_kecamatan_by_kab($_POST['kode']);
+        } else {
+            $respon = '<option value="">...nul</option>';
+        }
+        echo $respon;
+    }
+
+    /*
+     * data kecamatan
+     */
+
+    function options_kecamatan_by_kab($id) {
+        $respon = '';
+        if (!empty($id)) {
+            $data = $this->reg_pasien_model->getDataKecamatanBykab($id);
+            if ($data != NULL) {
+                $i = 0;
+                foreach ($data as $row) {
+                    $i++;
+                    $respon .= '<option value="' . $row->kode . '">' . $row->nama . '</option>';
+                }
+                if ($i > 1) {
+                    $respon = '<option value="">...</option>' . $respon;
+                }
+            } else {
+                $respon = '<option value="">...</option>';
+            }
+        } else {
+            $respon = '<option value="">...</option>';
+        }
+        return $respon;
+    }
+
+    public function get_options_kelurahan_by_kec() {
+        $respon = '';
+        if (!empty($_POST['kode'])) {
+
+            $respon = $this->options_kelurahan_by_kec($_POST['kode']);
+        } else {
+            $respon = '<option value="">...nul</option>';
+        }
+        echo $respon;
+    }
+
+    /*
+     * data kelurahan
+     */
+
+    function options_kelurahan_by_kec($id) {
+        $respon = '';
+        if (!empty($id)) {
+            $data = $this->reg_pasien_model->getDataKelurahanBykec($id);
+            if ($data != NULL) {
+                $i = 0;
+                foreach ($data as $row) {
+                    $i++;
+                    $respon .= '<option value="' . $row->kode . '">' . $row->nama . '</option>';
+                }
+                if ($i > 1) {
+                    $respon = '<option value="">...</option>' . $respon;
+                }
+            } else {
+                $respon = '<option value="">...</option>';
+            }
+        } else {
+            $respon = '<option value="">...</option>';
+        }
+        return $respon;
+    }
+
     /*
      * menampilkan desc table
      */
 
     function getTableDescriptin($tableName = '') {
         if (!empty($tableName)) {
-            $data = $this->bosk1_model->tableDescription($tableName);
+            $data = $this->reg_pasien_model->tableDescription($tableName);
             if ($data != NULL) {
                 echo "$" . $tableName . " = array(<br>";
                 $i = 0;
@@ -88,7 +166,7 @@ class Reg_pasien extends MY_Controller {
 
     function getTableDescriptinWithValidValue($tableName = '') {
         if (!empty($tableName)) {
-            $data = $this->bosk1_model->tableDescription($tableName);
+            $data = $this->reg_pasien_model->tableDescription($tableName);
             if ($data != NULL) {
                 echo "$" . $tableName . " = array(<br>";
                 $i = 0;
@@ -110,92 +188,44 @@ class Reg_pasien extends MY_Controller {
      * proses simpan data
      */
 
-    function prosesSimpan() {
+    function proses_simpan() {
         $data = array(
             'status' => FALSE,
             'message' => NULL,
-            'idTrans' => NULL
+            'noRm' => NULL
         );
         if (!empty($_POST)) {
-            $trans_k1 = array(
-                'k1_code' => !empty($_POST['idTrans']) ? $_POST['idTrans'] : '',
-                'k1_tahun_code' => !empty($_POST['tahunAjaran']) ? $_POST['tahunAjaran'] : '',
-                'k1_triwulan_code' => !empty($_POST['triwulan']) ? $_POST['triwulan'] : '',
-                'k1_donatur_code' => !empty($_POST['sumberDanaBos']) ? $_POST['sumberDanaBos'] : '',
-                'k1_nns' => nns(),
-                'k1_jumlah_siswa' => !empty($_POST['jumlahSiswa']) ? $_POST['jumlahSiswa'] : '',
-                'k1_uang_per_siswa' => !empty($_POST['jumlahUangPerSiswa']) ? $_POST['jumlahUangPerSiswa'] : '',
-                'k1_date' => !empty($_POST['tanggal']) ? dateReverse($_POST['tanggal']) : dateReverse(tglSekarang()),
-                'k1_no_urut' => !empty($_POST['noUrutTerima']) ? $_POST['noUrutTerima'] : '',
-                'k1_no_kode' => !empty($_POST['noKodeTerima']) ? $_POST['noKodeTerima'] : '',
-                'k1_uraian' => !empty($_POST['uraianTerima']) ? $_POST['uraianTerima'] : '',
-                'k1_uang_terima' => !empty($_POST['jumlahTerima']) ? $_POST['jumlahTerima'] : 0,
-                'k1_user_update' => $this->userId
+            $mst_pasien = array(
+                'mpas_id' => !empty($_POST['noRm']) ? $_POST['noRm'] : '',
+                'mpas_nama' => !empty($_POST['namaPasien']) ? $_POST['namaPasien'] : '',
+                'mpas_jenis_kelamin' => !empty($_POST['jenisKelamin']) ? $_POST['jenisKelamin'] : '',
+                'mpas_tempat_lahir' => !empty($_POST['tempatLahir']) ? $_POST['tempatLahir'] : '',
+                'mpas_tanggal_lahir' => !empty($_POST['tanggalLahir']) ? $_POST['tanggalLahir'] : '',
+                'rsk_id' => !empty($_POST['statusKawin']) ? $_POST['statusKawin'] : '',
+                'rag_id' => !empty($_POST['agama']) ? $_POST['agama'] : '',
+                'rgd_id' => !empty($_POST['golonganDarah']) ? $_POST['golonganDarah'] : '',
+                'mpas_telepon' => !empty($_POST['noTelepon']) ? $_POST['noTelepon'] : '',
+                'mpas_hp' => !empty($_POST['noHp']) ? $_POST['noHp'] : '',
+                'mpas_no_identitas' => !empty($_POST['noIdentitas']) ? $_POST['noIdentitas'] : '',
+                'mpas_alamat' => !empty($_POST['alamat']) ? $_POST['alamat'] : '',
+                'rpro_id' => !empty($_POST['propinsi']) ? $_POST['propinsi'] : '',
+                'rkab_id' => !empty($_POST['kabupaten']) ? $_POST['kabupaten'] : '',
+                'rkec_id' => !empty($_POST['kecamatan']) ? $_POST['kecamatan'] : '',
+                'rkel_id' => !empty($_POST['kelurahan']) ? $_POST['kelurahan'] : '',
+                'rpend_id' => !empty($_POST['pendidikan']) ? $_POST['pendidikan'] : '',
+                'rpek_id' => !empty($_POST['pekerjaan']) ? $_POST['pekerjaan'] : '',
+                'mpas_alergi' => !empty($_POST['alergi']) ? $_POST['alergi'] : ''
             );
-
-            if (!empty($_POST['idTrans'])) {//proses edit
-                $send = $this->bosk1_model->simpanData($trans_k1);
-                if ($send['status'] == TRUE) {
-                    $data['status'] = TRUE;
-                    $data['idTrans'] = $send['idTrans'];
-                    $data['message'] = 'Proses simpan berhasil';
-                    addLogAktifity('bos k1', 'update', 'edit data dengan kode k1 : ' . $_POST['idTrans']);
-                } else {
-                    $data['status'] = FALSE;
-                    $data['message'] = 'Proses simpan gagal';
-                }
-            } else {
-                $tahun = !empty($_POST['tahunAjaran']) ? $_POST['tahunAjaran'] : '';
-                $triwulan = !empty($_POST['triwulan']) ? $_POST['triwulan'] : '';
-                $sumberDana = !empty($_POST['sumberDanaBos']) ? $_POST['sumberDanaBos'] : '';
-
-                if ($this->bosk1_model->cekSudahAdaDataBos($tahun, $triwulan, $sumberDana) == FALSE) {
-                    $send = $this->bosk1_model->simpanData($trans_k1);
-                    if ($send['status'] == TRUE) {
-                        $data['status'] = TRUE;
-                        $data['idTrans'] = $send['idTrans'];
-                        $data['message'] = 'Proses simpan berhasil';
-                        addLogAktifity('bos k1', 'insert', 'tambah data dengan kode k1 : ' . $send['idTrans']);
-                    } else {
-                        $data['status'] = FALSE;
-                        $data['message'] = 'Proses simpan gagal';
-                    }
-                } else {
-                    $data['message'] = 'Penerimaan Dana Bos dengan sumber dana, triwulan dan tahun terpilih sudah ada';
-                }
-            }
-        } else {
-            $data['message'] = 'Tidak ada proses';
-        }
-        echo json_encode($data);
-    }
-
-    /*
-     * proses delete data
-     */
-
-    function prosesDelete() {
-        $data = array(
-            'status' => FALSE,
-            'message' => NULL
-        );
-        if (!empty($_POST['idTrans'])) {
-            $trans_k1 = array(
-                'k1_code' => $_POST['idTrans'],
-                'k1_user_update' => $this->userId,
-                'k1_status' => 1
-            );
-            $send = $this->bosk1_model->simpanData($trans_k1);
+            $send = $this->reg_pasien_model->simpanData($mst_pasien);
             if ($send['status'] == TRUE) {
                 $data['status'] = TRUE;
-                $data['message'] = 'Proses hapus berhasil';
-                addLogAktifity('bos k1', 'delete', 'hapus data dengan kode k1 : ' . $_POST['idTrans']);
+                $data['noRm'] = $send['mpas_id'];
+                $data['message'] = 'Proses simpan berhasil';
             } else {
                 $data['status'] = FALSE;
-                $data['message'] = 'Proses hapus gagal';
+                $data['message'] = 'Proses simpan gagal';
             }
-        } else {
-            $data['message'] = 'Identitas data tidak diketahui';
+            $data['message'] = 'Tidak ada proses';
         }
         echo json_encode($data);
     }
@@ -228,16 +258,22 @@ class Reg_pasien extends MY_Controller {
      * mengambil satu data
      */
 
-    function getDataByIdTrans() {
+    function get_data_pasien_by_id() {
         $data = array(
             'data' => NULL,
-            'message' => NULL
+            'message' => NULL,
+            'optionsKab' => NULL,
+            'optionskec' => NULL,
+            'optionsKel' => NULL,
         );
-        if (!empty($_POST['idTrans'])) {
-            $idTrans = $_POST['idTrans'];
-            $result = $this->bosk1_model->dataTransById($idTrans);
+        if (!empty($_POST['noRm'])) {
+            $idTrans = $_POST['noRm'];
+            $result = $this->reg_pasien_model->dataPasienByDd($idTrans);
             if ($result != NULL) {
                 $data['data'] = $result;
+                $data['optionsKab'] = $this->options_kabupaten_by_prop($result->rpro_id);
+                $data['optionskec'] = $this->options_kecamatan_by_kab($result->rkab_id);
+                $data['optionsKel'] = $this->options_kelurahan_by_kec($result->rkec_id);
             } else {
                 $data['message'] = 'Tidak ada data ditemukan';
             }
@@ -248,4 +284,3 @@ class Reg_pasien extends MY_Controller {
     }
 
 }
-?>
