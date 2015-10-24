@@ -124,16 +124,16 @@
                 <div class="nav-collapse collapse">
                     <ul class="nav" id="menuBos">
                         <li class="active">
-                            <a href="<? echo site_url(); ?>">Home</a>
+                            <a href="<?php echo site_url(); ?>">Home</a>
                         </li>
                         <li class="">
-                            <a href="<? echo site_url('registrasi/reg_pasien'); ?>">Registrsi Pasien</a>
+                            <a href="<?php echo site_url('registrasi/reg_pasien'); ?>">Registrsi Pasien</a>
                         </li>
                         <li class="">
-                            <a href="<? echo site_url('registrasi/reg_poli'); ?>">Poliklinik</a>
+                            <a href="<?php echo site_url('registrasi/reg_poli'); ?>">Poliklinik</a>
                         </li>
                         <li class="">
-                            <a href="<? echo site_url('pelayanan/pelayanan'); ?>">Pelayanan</a>
+                            <a href="<?php echo site_url('pelayanan/pelayanan'); ?>">Pelayanan</a>
                         </li>
                     </ul>
                 </div>

@@ -4,10 +4,13 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 class Reg_pasien extends MY_Controller {
+    private $REST_PASIEN_SERVER = "http://localhost/semar_server/index.php/api/pasien/getpasien";
 
     function __construct() {
         parent::__construct();
         $this->load->model('registrasi/reg_pasien_model');
+                        $this->load->library('rest');
+        Requests::register_autoloader();
     }
 
     function index() {
@@ -19,10 +22,40 @@ class Reg_pasien extends MY_Controller {
         $this->load->view('template', $data);
     }
 
+    public function get_pasien($no_rm_nasional=''){
+        
+        $url = $this->REST_PASIEN_SERVER . '/' .$no_rm_nasional;
+                $header = array(
+            'Accept' => 'application/json'
+        );
+         $data = Requests::get($url, $header);
+         return $data;
+    }
+    
+    
+    public function kirim_pasien($mpas_id='', $mrs_id='', $tkunj_norm=''){
+                        $headers = array(
+            'Accept' => 'application/json'
+        );
+          $mpas_id = 1;
+          $mrs_id = 2;
+          $tkunj_norm = 3;
+                        $url = 'http://localhost/semar_server/index.php/api/pasien/save_pasien';
+         $data = array(
+           'mpas_id' => $mpas_id,
+             'mrs_id' => $mrs_id,
+             'tkunj_no_rm' => $tkunj_norm
+         );
+         print_r($url);
+        $status = Requests::post($url, $headers, $data);
+        print_r($status);die;
+    }
+
     /*
      *
      */
 
+    
     public function get_options_kabupaten_by_prop() {
 
         $respon = '';
