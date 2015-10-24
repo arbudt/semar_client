@@ -4,7 +4,7 @@
         width:40%;
     }
 
-    .modal-list-data{
+    .modal-list-data2{
         margin-left: -550px;
         width: 1100px;
     }
@@ -17,26 +17,30 @@
 </style>
 
 <!-- HTML POP UP  -->
-<div id="modalListData" class="modal hide fade modal-list-data" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="modalListDataKunjungan" class="modal hide fade modal-list-data2" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header btn-info">
         <button type="button" class="close close-list-rekap" data-dismiss="modal" aria-hidden="true">x</button>
-        <h4>LIST DATA REKAP PASIEN</h4>
+        <h4>List Kunjungan Poli</h4>
     </div>
     <div class="modal-body">
-        <form class="well form-inline" method="post" id="formListData">
+        <form class="well form-inline" method="post" id="formListDataKunjungan">
             <div class="row-fluid">
                 <div class="span5">   
                     <table>
                         <tr>
-                            <td class="title"><input type="checkbox" id="listCekNoRm" name="listCekNoRm" value="1"/>&nbsp;<label for="listCekNoRm">No Rm</label></td>
+                            <td class="title"><input type="checkbox" id="listCekPoliKunjungan" name="listCekPoliKunjungan" value="1"/>&nbsp;<label for="listCekPoliKunjungan">Poli</label></td>
+                            <td><?php dropDownPoli('name="listPoliKunjungan" id="listPoliKunjungan" class="listPoliKunjungan" '); ?></td>
+                        </tr>
+                        <tr>
+                            <td class="title"><input type="checkbox" id="listCekNoRmKunjungan" name="listCekNoRmKunjungan" value="1"/>&nbsp;<label for="listCekNoRmKunjungan">No Rm</label></td>
                             <td>
-                                <input type="text" name="listNoRm" id="listNoRm" value=""/>
+                                <input type="text" name="listNoRmKunjungan" id="listNoRmKunjungan" value=""/>
                             </td>
                         </tr>
                         <tr>
-                            <td class="title"><input type="checkbox" id="listCekNama" name="listCekNama" value="1"/>&nbsp;<label for="listCekNama">Nama</label></td>
+                            <td class="title"><input type="checkbox" id="listCekNamaKunjungan" name="listCekNamaKunjungan" value="1"/>&nbsp;<label for="listCekNamaKunjungan">Nama</label></td>
                             <td>
-                                <input type="text" name="listNama" id="listNama" value=""/>
+                                <input type="text" name="listNamaKunjungan" id="listNamaKunjungan" value=""/>
                             </td>
                         </tr>
                         <tr>
@@ -48,9 +52,10 @@
             </div>
         </form>
         <h4>List Data</h4>
-        <table id="tableListData" class="table table-bordered table-condensed table-hover" style="cursor: pointer;">
+        <table id="tableListDataKunjungan" class="table table-bordered table-condensed table-hover" style="cursor: pointer;">
             <thead>
                 <tr style="text-align: center; font-weight: bold;">
+                    <th>Nama Poli</th>
                     <th>No RM</th>
                     <th>Nama Pasien</th>
                     <th>Jenis Kelamin</th>
@@ -58,7 +63,7 @@
                     <th>Alamat</th>
                 </tr>
             </thead>
-            <tbody id="dataTableListData">
+            <tbody id="datatableListDataKunjunganKunjungan">
             </tbody>
         </table>
     </div>
@@ -155,7 +160,7 @@
     $(document).ready(function() {
         $(document).on("keydown", "input,select,textarea", function(event) {
             if (event.keyCode === 13) {
-                var formInput = $('#formListData').find('input,select,textarea');
+                var formInput = $('#formListDataKunjungan').find('input,select,textarea');
                 var idx = formInput.index(this);
                 if (idx > -1 && (idx + 1 < formInput.length)) {
                     var nextInput = formInput[idx + 1];
@@ -171,66 +176,86 @@
     });
 
     $(document).on('click', '.close-list-data .listData', function() {
-        clearFieldsList('formListData');
-        removeRequiredList('formListData');
-        resetValidationFormList('formListData');
-        $('#dataTableListData').empty();
-        $('#tableListData').tablePagination(optionsPaginationList);
-        $('#modalListData').modal('hide');
+        clearFieldsList('formListDataKunjungan');
+        removeRequiredList('formListDataKunjungan');
+        resetValidationFormList('formListDataKunjungan');
+        $('#datatableListDataKunjunganKunjungan').empty();
+        $('#tableListDataKunjungan').tablePagination(optionsPaginationList);
+        $('#modalListDataKunjungan').modal('hide');
     });
 
     /*
      * aksi form di dalam modal 
      */
 
-    $(document).on('change', '#listNoRm', function() {
+    $(document).on('change', '#listPoliKunjungan', function() {
         if ($(this).val() !== '') {
-            $('#listCekNoRm').prop('checked', true);
+            $('#listCekPoliKunjungan').prop('checked', true);
         } else {
-            $('#listCekNoRm').prop('checked', false);
+            $('#listCekPoliKunjungan').prop('checked', false);
             $(this).removeAttr('required');
-            resetErrorValidationFieldList('#listlistNoRmKsm');
+            resetErrorValidationFieldList('#listPoliKunjungan');
         }
     });
 
-    $(document).on('click', '#listCekNoRm', function() {
+    $(document).on('click', '#listCekPoliKunjungan', function() {
         if ($(this).is(':checked')) {
-            $('#listNoRm').attr('required', true);
+            $('#listPoliKunjungan').attr('required', true);
         } else {
-            $('#listNoRm').val('');
-            $('#listNoRm').removeAttr('required');
-            resetErrorValidationFieldList('#listNoRm');
+            $('#listPoliKunjungan').val('');
+            $('#listPoliKunjungan').removeAttr('required');
+            resetErrorValidationFieldList('#listPoliKunjungan');
         }
     });
-
-    $(document).on('change', '#listNama', function() {
+    
+    $(document).on('change', '#listNoRmKunjungan', function() {
         if ($(this).val() !== '') {
-            $('#listCekNama').prop('checked', true);
+            $('#listCekNoRmKunjungan').prop('checked', true);
         } else {
-            $('#listCekNama').prop('checked', false);
+            $('#listCekNoRmKunjungan').prop('checked', false);
             $(this).removeAttr('required');
-            resetErrorValidationFieldList('#listNama');
+            resetErrorValidationFieldList('#listlistNoRmKunjungan');
         }
     });
 
-    $(document).on('click', '#listCekNama', function() {
+    $(document).on('click', '#listCekNoRmKunjungan', function() {
         if ($(this).is(':checked')) {
-            $('#listNama').attr('required', true);
+            $('#listNoRmKunjungan').attr('required', true);
         } else {
-            $('#listNama').val('');
-            $('#listNama').removeAttr('required');
-            resetErrorValidationFieldList('#listNama');
+            $('#listNoRmKunjungan').val('');
+            $('#listNoRmKunjungan').removeAttr('required');
+            resetErrorValidationFieldList('#listNoRmKunjungan');
+        }
+    });
+
+    $(document).on('change', '#listNamaKunjungan', function() {
+        if ($(this).val() !== '') {
+            $('#listCekNamaKunjungan').prop('checked', true);
+        } else {
+            $('#listCekNamaKunjungan').prop('checked', false);
+            $(this).removeAttr('required');
+            resetErrorValidationFieldList('#listNamaKunjungan');
+        }
+    });
+
+    $(document).on('click', '#listCekNamaKunjungan', function() {
+        if ($(this).is(':checked')) {
+            $('#listNamaKunjungan').attr('required', true);
+        } else {
+            $('#listNamaKunjungan').val('');
+            $('#listNamaKunjungan').removeAttr('required');
+            resetErrorValidationFieldList('#listNamaKunjungan');
         }
     });
 
     $(document).ready(function() {
-        $('#formListData').validate({
+        $('#formListDataKunjungan').validate({
             submitHandler: function() {
-                $('#dataTableListData').html('');
+                $('#datatableListDataKunjunganKunjungan').html('');
                 $.ajax({
                     type: 'POST',
-                    url: "<?php echo site_url('registrasi/reg_pasien/cari_list_pasien'); ?>",
-                    data: $('#formListData').serialize(),
+                    url: "<?php echo site_url('registrasi/reg_poli/cari_list_kunjungan'); ?>",
+                    data: $('#formListDataKunjungan').serialize(),
                     dataType: 'json',
                     beforeSend: function() {
                         $("#loading").modal('show');
@@ -244,7 +269,8 @@
                         if (response['data'] !== null) {
                             var string_tr = '';
                             for (var i = 0; i < response['data'].length; i++) {
-                                string_tr += '<tr class="listData" id="listData' + response['data'][i]['mpas_id'] + '" data-id="' + response['data'][i]['mpas_id'] + '">';
+                                string_tr += '<tr class="listDataKunjungan" id="listDataKunjungan' + response['data'][i]['mpas_id'] + '" data-id="' + response['data'][i]['mpas_id'] + '">';
+                                string_tr += '<td nowrap>' + response['data'][i]['mpoli_nama'] + '</td>';
                                 string_tr += '<td nowrap>' + response['data'][i]['mpas_id'] + '</td>';
                                 string_tr += '<td>' + response['data'][i]['mpas_nama'] + '</td>';
                                 string_tr += '<td nowrap>' + response['data'][i]['mpas_jenis_kelamin'] + '</td>';
@@ -252,11 +278,11 @@
                                 string_tr += '<td nowrap>' + response['data'][i]['mpas_alamat'] + '</td>';
                                 string_tr += '</tr>';
                             }
-                            $('#dataTableListData').html(string_tr);
+                            $('#datatableListDataKunjunganKunjungan').html(string_tr);
                         } else {
                             bootbox.alert(response['message']);
                         }
-                        $('#tableListData').tablePagination(optionsPaginationList);
+                        $('#tableListDataKunjungan').tablePagination(optionsPaginationList);
                     }
                 });
                 return false;

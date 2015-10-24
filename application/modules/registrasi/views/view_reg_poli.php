@@ -13,15 +13,19 @@
 <div class="row-fluid" style="margin-top: -8px;">
     <div class="btn-group">
         <button type="button" id="btnListData" class="btn btn-info"><i class="icon-search"></i>List Data Pasien</button>
+        <button type="button" id="btnListDataKunjungan" class="btn btn-info"><i class="icon-search"></i>List Data Poliklinik</button>
     </div>
 </div>
 <br>
 
-<!-- List Rekap -->
+<!-- List -->
 <?php $this->load->view('registrasi/view_list_pasien'); ?>
+
+<?php $this->load->view('registrasi/view_list_kunjungan'); ?>
 
 <div class="row-fluid">
     <form class="form well" method="POST" id="formRegistrasi">
+        <input type="hidden" name="idKunjungan" id="idKunjungan" value="" class="idKunjungan"/>
         <div class="row-fluid">
             <div class="span6">
                 <table>
@@ -65,6 +69,10 @@
             <div class="span6">
                 <table>
                     <tr>
+                        <td class="labelField">No Anritan</td>
+                        <td><input type="text" name="noAntrian" id="noAntrian" value="" class="noAntrian" readonly/></td>
+                    </tr>
+                    <tr>
                         <td class="labelField">Poliklinik</td>
                         <td><?php dropDownPoli('name="poli" id="poli" class="poli" required'); ?></td>
                     </tr>
@@ -85,10 +93,10 @@
                     </tr>
                     <tr>
                         <td class="labelField">Cara Bayar</td>
-                        <td><?php dropDownDokter('name="caraBayar" id="caraBayar" class="caraBayar" required'); ?></td>
+                        <td><?php dropDownCaraBayar('name="caraBayar" id="caraBayar" class="caraBayar" required'); ?></td>
                     </tr>
                     <tr>
-                        <td class="labelField">No Peserta</td>
+                        <td class="labelField">No Peserta Jaminan</td>
                         <td><input type="text" name="noPeserta" id="noPeserta" value="" class="noPeserta" /></td>
                     </tr>
                     <tr>
@@ -122,12 +130,12 @@
             $(this).mask("99-99-9999");
         });
 
-        $('#datePickerTanggal').datetimepicker({
+        $('#datePickerTanggalPeriksa').datetimepicker({
             language: 'pt-BR',
             autoclose: true
         });
 
-        $(document).on('focus', '#tanggal', function() {
+        $(document).on('focus', '#tanggalPeriksa', function() {
             $(this).mask("99-99-9999");
         });
         
@@ -148,90 +156,6 @@
         });
     });
 
-    $(document).on('change', '#propinsi', function() {
-        var kode = ''+$(this).val();
-        if (kode.length) {
-            $.ajax({
-                type: 'POST',
-                url: "<?php echo site_url('registrasi/reg_pasien/get_options_kabupaten_by_prop'); ?>",
-                data: {kode: kode},
-                beforeSend: function() {
-                    showProgressBar('get data...');
-                },
-                error: function(xhr, status) {
-                    hideProgressBar();
-                    bootbox.alert("Terjadi saat request data, Hubungi Administrator");
-                    $('#kabupaten').html('<option value="">...</option>');
-                    $('#kabupaten').val('');
-                },
-                success: function(response) {
-                    hideProgressBar();
-                    $('#kabupaten').html(response);
-                    $('#kabupaten').val($('#kabupaten option:first').val());
-                }
-            });
-        } else {
-            $('#kabupaten').html('<option value="">...</option>');
-            $('#kabupaten').val('');
-        }
-    });
-
-    $(document).on('change', '#kabupaten', function() {
-        var kode = ''+$(this).val();
-        if (kode.length) {
-            $.ajax({
-                type: 'POST',
-                url: "<?php echo site_url('registrasi/reg_pasien/get_options_kecamatan_by_kab'); ?>",
-                data: {kode: kode},
-                beforeSend: function() {
-                    showProgressBar('get data...');
-                },
-                error: function(xhr, status) {
-                    hideProgressBar();
-                    bootbox.alert("Terjadi saat request data, Hubungi Administrator");
-                    $('#kecamatan').html('<option value="">...</option>');
-                    $('#kecamatan').val('');
-                },
-                success: function(response) {
-                    hideProgressBar();
-                    $('#kecamatan').html(response);
-                    $('#kecamatan').val($('#kabupaten option:first').val());
-                }
-            });
-        } else {
-            $('#kecamatan').html('<option value="">...</option>');
-            $('#kecamatan').val('');
-        }
-    });
-
-    $(document).on('change', '#kecamatan', function() {
-        var kode = ''+$(this).val();
-        if (kode.length) {
-            $.ajax({
-                type: 'POST',
-                url: "<?php echo site_url('registrasi/reg_pasien/get_options_kelurahan_by_kec'); ?>",
-                data: {kode: kode},
-                beforeSend: function() {
-                    showProgressBar('get data...');
-                },
-                error: function(xhr, status) {
-                    hideProgressBar();
-                    bootbox.alert("Terjadi saat request data, Hubungi Administrator");
-                    $('#kelurahan').html('<option value="">...</option>');
-                    $('#kelurahan').val('');
-                },
-                success: function(response) {
-                    hideProgressBar();
-                    $('#kelurahan').html(response);
-                    $('#kelurahan').val($('#kabupaten option:first').val());
-                }
-            });
-        } else {
-            $('#kelurahan').html('<option value="">...</option>');
-            $('#kelurahan').val('');
-        }
-    });
-    
 </script>
 
 <!-- JS Ready -->
@@ -254,65 +178,43 @@
         $('#tempatLahir').val('');
         $('#tanggalLahir').val('');
         $('#jenisKelamin').val('');
-        $('#statusKawin').val('');
-        $('#agama').val('');
         $('#golonganDarah').val('');
-        $('#noTelepon').val('');
-        $('#noIdentitas').val('');
-        $('#propinsi').val('');
-        $('#propinsi').change();
-        $('#kabupaten').val('');
-        $('#kabupaten').change();
-        $('#kecamatan').val('');
-        $('#kecamatan').change();
-        $('#kelurahan').val('');
-        $('#kelurahan').change();
-        $('#alamat').val('');
-        $('#pendidikan').val('');
-        $('#pekerjaan').val('');
         $('#alergi').val('');
+
+        $('#noAntrian').val('');
+        $('#poli').val('');
+        $('#tanggalPeriksa').val('');
+        $('#dokter').val('');
+        $('#caraBayar').val('');
+        $('#noPeserta').val('');
+        $('#keterangan').val('');
     }
     
     function disableForm(){
-        $('#noRm').prop('disabled', true);
         $('#namaPasien').prop('disabled', true);
         $('#tempatLahir').prop('disabled', true);
         $('#tanggalLahir').prop('disabled', true);
         $('#jenisKelamin').prop('disabled', true);
-        $('#statusKawin').prop('disabled', true);
-        $('#agama').prop('disabled', true);
         $('#golonganDarah').prop('disabled', true);
-        $('#noTelepon').prop('disabled', true);
-        $('#noIdentitas').prop('disabled', true);
-        $('#propinsi').prop('disabled', true);
-        $('#kabupaten').prop('disabled', true);
-        $('#kecamatan').prop('disabled', true);
-        $('#kelurahan').prop('disabled', true);
-        $('#alamat').prop('disabled', true);
-        $('#pendidikan').prop('disabled', true);
-        $('#pekerjaan').prop('disabled', true);
         $('#alergi').prop('disabled', true);
+
+        $('#noAntrian').prop('disabled', true);
+        $('#poli').prop('disabled', true);
+        $('#tanggalPeriksa').prop('disabled', true);
+        $('#dokter').prop('disabled', true);
+        $('#caraBayar').prop('disabled', true);
+        $('#noPeserta').prop('disabled', true);
+        $('#keterangan').prop('disabled', true);
     }
     
     function enableForm(){
-        $('#noRm').prop('disabled', false);
-        $('#namaPasien').prop('disabled', false);
-        $('#tempatLahir').prop('disabled', false);
-        $('#tanggalLahir').prop('disabled', false);
-        $('#jenisKelamin').prop('disabled', false);
-        $('#statusKawin').prop('disabled', false);
-        $('#agama').prop('disabled', false);
-        $('#golonganDarah').prop('disabled', false);
-        $('#noTelepon').prop('disabled', false);
-        $('#noIdentitas').prop('disabled', false);
-        $('#propinsi').prop('disabled', false);
-        $('#kabupaten').prop('disabled', false);
-        $('#kecamatan').prop('disabled', false);
-        $('#kelurahan').prop('disabled', false);
-        $('#alamat').prop('disabled', false);
-        $('#pendidikan').prop('disabled', false);
-        $('#pekerjaan').prop('disabled', false);
-        $('#alergi').prop('disabled', false);
+        $('#noAntrian').prop('disabled', false);
+        $('#poli').prop('disabled', false);
+        $('#tanggalPeriksa').prop('disabled', false);
+        $('#dokter').prop('disabled', false);
+        $('#caraBayar').prop('disabled', false);
+        $('#noPeserta').prop('disabled', false);
+        $('#keterangan').prop('disabled', false);
     }
     
     /*
@@ -320,11 +222,11 @@
      **/
     $(document).on('click', '.listData', function(){
         var idTrans = $(this).data('id');
-        getDataByidTrans(idTrans);
+        getDataPasienByidTrans(idTrans);
         $('#modalListData').modal('hide');
     });
 
-    function getDataByidTrans(idTrans){
+    function getDataPasienByidTrans(idTrans){
         if(idTrans !== null){
             $.ajax({
                 type: "POST",
@@ -339,7 +241,7 @@
                     bootbox.alert(status);
                 },
                 success: function(response) {
-                    setDataTrans(response);
+                    setDataPasien(response);
                     hideProgressBar();
                 }
             });
@@ -351,7 +253,7 @@
     /*
      *set data from
      */
-    function setDataTrans(response){
+    function setDataPasien(response){
         clearForm();
         disableForm();
         if(response['data'] !== null){
@@ -360,32 +262,80 @@
             $('#tempatLahir').val(response['data']['mpas_tempat_lahir']);
             $('#tanggalLahir').val(response['data']['mpas_tanggal_lahir']);
             $('#jenisKelamin').val(response['data']['mpas_jenis_kelamin']);
-            $('#statusKawin').val(response['data']['rsk_id']);
-            $('#agama').val(response['data']['rag_id']);
             $('#golonganDarah').val(response['data']['rgd_id']);
-            $('#noTelepon').val(response['data']['mpas_telepon']);
-            $('#noIdentitas').val(response['data']['mpas_no_identitas']);
-            $('#propinsi').val(response['data']['rpro_id']);
-            $('#kabupaten').html(response['optionsKab']);
-            $('#kabupaten').val(response['data']['rkab_id']);
-            $('#kecamatan').html(response['optionskec']);
-            $('#kecamatan').val(response['data']['rkec_id']);
-            $('#kelurahan').html(response['optionsKel']);
-            $('#kelurahan').val(response['data']['rkel_id']);
-            $('#alamat').val(response['data']['mpas_alamat']);
-            $('#pendidikan').val(response['data']['rpend_id']);
-            $('#pekerjaan').val(response['data']['rpek_id']);
             $('#alergi').val(response['data']['mpas_alergi']);
+        }
+        enableForm();
+        $('#btnAdd').prop('disabled', true);
+        $('#btnEdit').prop('disabled', true);
+        $('#btnCancel').prop('disabled', false);
+        $('#btnSave').prop('disabled', false);
+    }
+
+    /*
+     *set data from
+     */
+    function setDataKunjungan(response){
+        clearForm();
+        disableForm();
+        if(response['data'] !== null){
+            $('#noRm').val(response['data']['mpas_id']);
+            $('#namaPasien').val(response['data']['mpas_nama']);
+            $('#tempatLahir').val(response['data']['mpas_tempat_lahir']);
+            $('#tanggalLahir').val(response['data']['tanggal_lahir']);
+            $('#jenisKelamin').val(response['data']['mpas_jenis_kelamin']);
+            $('#golonganDarah').val(response['data']['rgd_id']);
+            $('#alergi').val(response['data']['mpas_alergi']);
+
+            $('#idKunjungan').val(response['data']['tkunj_id']);
+            $('#noAntrian').val(response['data']['tkunj_no_antrian']);
+            $('#poli').val(response['data']['mpoli_id']);
+            $('#tanggalPeriksa').val(response['data']['tkunj_tanggal']);
+            $('#dokter').val(response['data']['mdok_id']);
+            $('#caraBayar').val(response['data']['mcb_id']);
+            $('#noPeserta').val(response['data']['tkunj_no_peserta']);
+            $('#keterangan').val(response['data']['tkunj_keterangan']);
         }
         $('#btnAdd').prop('disabled', false);
         $('#btnEdit').prop('disabled', false);
         $('#btnCancel').prop('disabled', true);
         $('#btnSave').prop('disabled', true);
     }
+
+    function getDataByidTrans(idTrans){
+        if(idTrans !== null){
+            $.ajax({
+                type: "POST",
+                url: "<?php echo site_url('registrasi/reg_poli/get_data_kunjungan_by_id') ?>",
+                data: {idTrans:idTrans},
+                dataType: 'json',
+                beforeSend: function(xhr) {
+                    showProgressBar('proses ambil data');
+                },
+                error: function(xhr, status) {
+                    hideProgressBar();
+                    bootbox.alert(status);
+                },
+                success: function(response) {
+                    setDataKunjungan(response);
+                    hideProgressBar();
+                }
+            });
+        }else{
+            bootbox.alert('Identitas data tidak diketahui');
+        }
+    }
 </script>
 
 <!-- Js Aksi -->
 <script>
+
+    $(document).on('click', '.listDataKunjungan', function(){
+        var idTrans = $(this).data('id');
+        getDataByidTrans(idTrans);
+        $('#modalListDataKunjungan').modal('hide');
+    });
+    
     $(document).on('click', '#btnAdd', function(){
         clearForm();
         enableForm();
@@ -404,7 +354,7 @@
     });
     
     $(document).on('click', '#btnCancel', function(){
-        var idTrans = ''+$('#noRm').val();
+        var idTrans = ''+$('#idKunjungan').val();
         if(idTrans.length){
             getDataByidTrans(idTrans);
         }else{
@@ -426,7 +376,7 @@
             submitHandler: function(form) {
                 $.ajax({
                     type: "POST",
-                    url: "<?php echo site_url('registrasi/reg_pasien/proses_simpan'); ?>",
+                    url: "<?php echo site_url('registrasi/reg_poli/proses_simpan'); ?>",
                     data: $('#formRegistrasi').serialize(),
                     dataType: 'json',
                     beforeSend: function(xhr) {
@@ -440,7 +390,7 @@
                         hideProgressBar();
                         if (response['status'] === true) {
                             if(response['idTrans'] !== null){
-                                getDataByidTrans(response['noRm']);
+                                getDataByidTrans(response['idTrans']);
                             }
                             bootbox.alert(response['message']);
                         } else {
@@ -459,4 +409,9 @@
     $(document).on('click', '#btnListData', function(){
         $('#modalListData').modal('show');
     });
+
+    $(document).on('click', '#btnListDataKunjungan', function(){
+        $('#modalListDataKunjungan').modal('show');
+    });
+
 </script>

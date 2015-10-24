@@ -42,21 +42,6 @@ class Reg_poli_model extends MY_Model {
              `mcb_nama` AS nama
             FROM `mst_cara_bayar`
             WHERE `mcb_isaktif` = '1'
-                        ");
-        if ($query->num_rows() > 0) {
-            return $query->result();
-        } else {
-            return NULL;
-        }
-    }
-
-    function getDataPropinsi() {
-        $query = $this->db->query("
-            SELECT
-            `rpro_id` AS kode,
-            `rpro_nama` AS nama
-            FROM `ref_propinsi`
-            WHERE `rpro_isaktif` = '1'
             ");
         if ($query->num_rows() > 0) {
             return $query->result();
@@ -65,91 +50,22 @@ class Reg_poli_model extends MY_Model {
         }
     }
 
-    function getDataPendidikan() {
+    function createNoAntrian($poli, $tgl) {
         $query = $this->db->query("
-            SELECT
-            `rpend_id` AS kode,
-            `rpend_nama` AS nama
-            FROM `ref_pendidikan`
-             WHERE `rpend_isaktif` = '1'
+            SELECT max(`tkunj_no_antrian`) antrian
+            FROM `trans_kunjungan`
+            WHERE `mpoli_id` = '$poli'
+            AND DATE_FORMAT(`tkunj_tanggal`, '%d-%m-%Y') = '$tgl'
             ");
         if ($query->num_rows() > 0) {
-            return $query->result();
+            $no = $query->row()->antrian;
+            if (!empty($no)) {
+                return $no++;
+            } else {
+                return 1;
+            }
         } else {
-            return NULL;
-        }
-    }
-
-    function getDataPekerjaan() {
-        $query = $this->db->query("
-            SELECT
-            `rpek_id` AS kode,
-            `rpek_nama` AS nama
-            FROM `ref_pekerjaan` WHERE `rpek_isaktif` = '1'
-            ");
-        if ($query->num_rows() > 0) {
-            return $query->result();
-        } else {
-            return NULL;
-        }
-    }
-
-    function getDataKabupatenByProp($idProp) {
-        $query = $this->db->query("
-            SELECT
-            `rkab_id` AS kode,
-            `rkab_nama` AS nama
-            FROM  `ref_kabupaten`
-            WHERE  `rkab_isaktif` =  '1'
-            AND  `rpro_id` =  $idProp
-                        ");
-        if ($query->num_rows() > 0) {
-            return $query->result();
-        } else {
-            return NULL;
-        }
-    }
-
-    function getDataKecamatanBykab($id) {
-        $query = $this->db->query("
-            SELECT
-            `rkec_id` AS kode,
-            `rkec_nama` AS nama
-            FROM `ref_kecamatan`
-            WHERE `rkec_isaktif` = '1'
-            AND `rkab_id` = '$id'
-                        ");
-        if ($query->num_rows() > 0) {
-            return $query->result();
-        } else {
-            return NULL;
-        }
-    }
-
-    function getDataKelurahanBykec($id) {
-        $query = $this->db->query("
-            SELECT
-            `rkel_id` AS kode,
-            `rkel_nama` AS nama
-            FROM `ref_kelurahan`
-            WHERE `rkel_isaktif` = '1'
-            AND `rkec_id` = '$id'
-                        ");
-        if ($query->num_rows() > 0) {
-            return $query->result();
-        } else {
-            return NULL;
-        }
-    }
-
-    function tableDescription($tableName) {
-        $query = $this->db->query("
-        describe $tableName
-        ");
-        if ($query->num_rows() > 0) {
-            return $query->result_array();
-        } else {
-            return NULL;
+            return 1;
         }
     }
 
@@ -160,26 +76,29 @@ class Reg_poli_model extends MY_Model {
     function simpanData($data) {
         $result = array(
             'status' => FALSE,
-            'mpas_id' => NULL
+            'idTrans' => NULL
         );
-        if (!empty($data['mpas_id'])) {
+        if (!empty($data['tkunj_id'])) {
 //            $this->db->set('k1_last_update', 'now()', FALSE);
-            $this->db->where('mpas_id', $data['mpas_id']);
-            $this->db->update('mst_pasien', $data);
+            $this->db->where('tkunj_id', $data['tkunj_id']);
+            $this->db->update('trans_kunjungan', $data);
         } else {
 //            $this->db->set('k1_last_update', 'now()', FALSE);
-            $this->db->insert('mst_pasien', $data);
+            $noAntrian = $this->createNoAntrian($data['mpoli_id'], $data['tkunj_tanggal']);
+            $this->db->set('tkunj_no_antrian', $noAntrian);
+            $this->db->set('tkunj_status_ambil', '0');
+            $this->db->insert('trans_kunjungan', $data);
         }
         if ($this->db->affected_rows() > 0) {
             $result['status'] = TRUE;
-            if (!empty($data['mpas_id'])) {
-                $result['mpas_id'] = $data['mpas_id'];
+            if (!empty($data['tkunj_id'])) {
+                $result['idTrans'] = $data['tkunj_id'];
             } else {
                 $querySelect = $this->db->query("
-                SELECT max(mpas_id) id FROM mst_pasien
+                SELECT max(tkunj_id) id FROM trans_kunjungan
                 ");
                 if ($querySelect->num_rows() > 0) {
-                    $result['mpas_id'] = $querySelect->row()->id;
+                    $result['idTrans'] = $querySelect->row()->id;
                 }
             }
         }
@@ -190,23 +109,36 @@ class Reg_poli_model extends MY_Model {
      * mengambil data limit
      */
 
-    function dataPasienByFilter($noRM, $nama) {
+    function dataKunjunganByFilter($poli, $noRM, $nama) {
         $addWhere = '';
+        if (!empty($poli)) {
+            $addWhere .= " AND trans_kunjungan.`mpoli_id` = '$poli'";
+        }
         if (!empty($noRM)) {
-            $addWhere .= " AND `mpas_id` = '$noRM'";
+            $addWhere .= " AND trans_kunjungan.`mpas_id` = '$noRM'";
         }
         if (!empty($nama)) {
-            $addWhere .= " AND `mpas_nama` like '%$nama%' ";
+            $addWhere .= " AND mst_pasien.`mpas_nama` like '%$nama%' ";
         }
         $query = $this->db->query("
-            SELECT
-            `mpas_id`,
-            `mpas_nama`,
-            `mpas_jenis_kelamin`,
-            `mpas_tempat_lahir`,
-            `mpas_tanggal_lahir`,
-            `mpas_alamat`
-            FROM `mst_pasien` WHERE 1
+           SELECT
+            trans_kunjungan.`tkunj_id`,
+            trans_kunjungan.`mpas_id`,
+            trans_kunjungan.`mpoli_id`,
+            trans_kunjungan.`tkunj_no_antrian`,
+            DATE_FORMAT(trans_kunjungan.`tkunj_tanggal`, '%d-%m-%Y') AS tkunj_tanggal,
+            trans_kunjungan.`tkunj_no_antrian`,
+            trans_kunjungan.`mdok_id`,
+            trans_kunjungan.`mcb_id`,
+            trans_kunjungan.`tkunj_no_peserta`,
+            trans_kunjungan.`tkunj_keterangan`,
+            DATE_FORMAT(mst_pasien.`mpas_tanggal_lahir`, '%d-%m-%Y') AS tanggal_lahir,
+            mst_pasien.*,
+            mst_poli.*
+            FROM trans_kunjungan
+            LEFT JOIN mst_pasien ON mst_pasien.`mpas_id` = trans_kunjungan.`mpas_id`
+            LEFT JOIN mst_poli ON mst_poli.mpoli_id = trans_kunjungan.mpoli_id
+            WHERE 1 
             $addWhere
         ");
         if ($query->num_rows() > 0) {
@@ -220,12 +152,24 @@ class Reg_poli_model extends MY_Model {
      * mengambil data by id
      */
 
-    function dataPasienByDd($id) {
+    function dataKunjunganById($id) {
         $query = $this->db->query("
             SELECT
-            *
-            FROM `mst_pasien`
-            WHERE `mpas_id` = '$id'
+            trans_kunjungan.`tkunj_id`,
+            trans_kunjungan.`mpas_id`,
+            trans_kunjungan.`mpoli_id`,
+            trans_kunjungan.`tkunj_no_antrian`,
+            DATE_FORMAT(trans_kunjungan.`tkunj_tanggal`, '%d-%m-%Y') AS tkunj_tanggal,
+            trans_kunjungan.`tkunj_no_antrian`,
+            trans_kunjungan.`mdok_id`,
+            trans_kunjungan.`mcb_id`,
+            trans_kunjungan.`tkunj_no_peserta`,
+            trans_kunjungan.`tkunj_keterangan`,
+            DATE_FORMAT(mst_pasien.`mpas_tanggal_lahir`, '%d-%m-%Y') AS tanggal_lahir,
+            mst_pasien.*
+            FROM trans_kunjungan
+            LEFT JOIN mst_pasien ON mst_pasien.`mpas_id` = trans_kunjungan.`mpas_id`
+            WHERE trans_kunjungan.`tkunj_id` = '$id'
         ");
         if ($query->num_rows() > 0) {
             return $query->row();
