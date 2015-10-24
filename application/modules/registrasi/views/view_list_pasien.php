@@ -138,7 +138,7 @@
 <!-- JS DEKLARATION -->
 <script>
 
-    var optionsPaginationListRekap = {//seting pagination
+    var optionsPaginationList = {//seting pagination
         optionsForRows: [10, 20, 50],
         rowsPerPage: 10,
         firstArrow: (new Image()).src = "<?php echo base_url('assets/img/firstBlue.gif'); ?>",
@@ -171,69 +171,66 @@
     });
 
     $(document).on('click', '.close-list-data, .listRekap', function() {
-        clearFieldsListRekap('formListData');
-        removeRequiredListRekap('formListData');
-        resetValidationFormListRekap('formListData');
-        $('#dataTableListRekapRemun').empty();
-        $('#tableListRekapRemun').tablePagination(optionsPaginationListRekap);
-        $('#modalListRekap').modal('hide');
+        clearFieldsList('formListData');
+        removeRequiredList'formListData');
+        resetValidationFormList('formListData');
+        $('#dataTableListData').empty();
+        $('#tableListData').tablePagination(optionsPaginationList);
+        $('#modalListData').modal('hide');
     });
 
     /*
      * aksi form di dalam modal 
      */
 
-    $(document).on('change', '#listKsm', function() {
+    $(document).on('change', '#listNoRm', function() {
         if ($(this).val() !== '') {
-            $('#listCekKsm').prop('checked', true);
+            $('#listCekNoRm').prop('checked', true);
         } else {
-            $('#listCekKsm').prop('checked', false);
+            $('#listCekNoRm').prop('checked', false);
             $(this).removeAttr('required');
-            resetErrorValidationFieldListRekap('#listKsm');
+            resetErrorValidationFieldList('#listlistNoRmKsm');
         }
     });
 
-    $(document).on('click', '#listCekKsm', function() {
+    $(document).on('click', '#listCekNoRm', function() {
         if ($(this).is(':checked')) {
-            $('#listKsm').attr('required', true);
+            $('#listNoRm').attr('required', true);
         } else {
-            $('#listKsm').val('');
-            $('#listKsm').removeAttr('required');
-            resetErrorValidationFieldListRekap('#listKsm');
-            $('#listDokter').val('');
-            $('#listCekDokter').prop('checked', false);
-            $('#listDokter').removeAttr('required');
+            $('#listNoRm').val('');
+            $('#listNoRm').removeAttr('required');
+            resetErrorValidationFieldList'#listNoRm');
         }
     });
 
-    $(document).on('change', '#listDokter', function() {
+    $(document).on('change', '#listNama', function() {
         if ($(this).val() !== '') {
-            $('#listCekDokter').prop('checked', true);
+            $('#listCekNama').prop('checked', true);
         } else {
-            $('#listCekDokter').prop('checked', false);
+            $('#listCekNama').prop('checked', false);
             $(this).removeAttr('required');
-            resetErrorValidationFieldListRekap('#listDokter');
+            resetErrorValidationFieldList('#listNama');
         }
     });
 
-    $(document).on('click', '#listCekDokter', function() {
+    $(document).on('click', '#listCekNama', function() {
         if ($(this).is(':checked')) {
-            $('#listDokter').attr('required', true);
+            $('#listNama').attr('required', true);
         } else {
-            $('#listDokter').val('');
-            $('#listDokter').removeAttr('required');
-            resetErrorValidationFieldListRekap('#listDokter');
+            $('#listNama').val('');
+            $('#listNama').removeAttr('required');
+            resetErrorValidationFieldList('#listNama');
         }
     });
 
     $(document).ready(function() {
-        $('#formListRekap').validate({
+        $('#formListData').validate({
             submitHandler: function() {
-                $('#dataTableListRekapRemun').html('');
+                $('#dataTableListData').html('');
                 $.ajax({
                     type: 'POST',
-                    url: "<?php echo site_url('keuangan/trans_rekap_remun/cari_list_rekap') ?>",
-                    data: $('#formListRekap').serialize(),
+                    url: "<?php echo site_url('registrasi/reg_pasien/cari_list_pasien'); ?>",
+                    data: $('#formListData').serialize(),
                     dataType: 'json',
                     beforeSend: function() {
                         $("#loading").modal('show');
@@ -247,36 +244,19 @@
                         if (response['data'] !== null) {
                             var string_tr = '';
                             for (var i = 0; i < response['data'].length; i++) {
-                                string_tr += '<tr class="listRekap" id="listRekap' + response['data'][i]['ID_TRANS'] + '" data-id-trans="' + response['data'][i]['ID_TRANS'] + '">';
-                                string_tr += '<td nowrap>' + response['data'][i]['NO_REKAP'] + '</td>';
-                                string_tr += '<td>' + response['data'][i]['NAMA_REKAP'] + '</td>';
-                                string_tr += '<td nowrap>' + response['data'][i]['NO_SK'] + '</td>';
-                                string_tr += '<td nowrap style="text-align: right;">' + addSeparatorTitikDesimal(response['data'][i]['BRUTO']) + '</td>';
-                                string_tr += '<td nowrap style="text-align: right;">' + addSeparatorTitikDesimal(response['data'][i]['PPH']) + '</td>';
-                                string_tr += '<td nowrap style="text-align: right;">' + addSeparatorTitikDesimal(response['data'][i]['NETTO']) + '</td>';
-                                string_tr += '<td nowrap>' + response['data'][i]['TGL_REKAP'] + '</td>';
-                                if (response['data'][i]['STATUS_REKAP'] !== null) {
-                                    string_tr += '<td nowrap>' + response['data'][i]['STATUS_REKAP'] + '</td>';
-                                } else {
-                                    string_tr += '<td nowrap></td>';
-                                }
-                                if (response['data'][i]['TGL_VERIF_AKUNTANSI'] !== null) {
-                                    string_tr += '<td nowrap>' + response['data'][i]['TGL_VERIF_AKUNTANSI'] + '</td>';
-                                } else {
-                                    string_tr += '<td nowrap></td>';
-                                }
-                                if (response['data'][i]['TGL_VERIF_KEUANGAN'] !== null) {
-                                    string_tr += '<td nowrap>' + response['data'][i]['TGL_VERIF_KEUANGAN'] + '</td>';
-                                } else {
-                                    string_tr += '<td nowrap></td>';
-                                }
+                                string_tr += '<tr class="listData" id="listData' + response['data'][i]['mpas_id'] + '" data-id="' + response['data'][i]['mpas_id'] + '">';
+                                string_tr += '<td nowrap>' + response['data'][i]['mpas_id'] + '</td>';
+                                string_tr += '<td>' + response['data'][i]['mpas_nama'] + '</td>';
+                                string_tr += '<td nowrap>' + response['data'][i]['mpas_jenis_kelamin'] + '</td>';
+                                string_tr += '<td nowrap>' + response['data'][i]['mpas_tanggal_lahir'] + '</td>';
+                                string_tr += '<td nowrap>' + response['data'][i]['mpas_alamat'] + '</td>';
                                 string_tr += '</tr>';
                             }
-                            $('#dataTableListRekapRemun').html(string_tr);
+                            $('#dataTableListData').html(string_tr);
                         } else {
                             bootbox.alert(response['message']);
                         }
-                        $('#tableListRekapRemun').tablePagination(optionsPaginationListRekap);
+                        $('#tableListData').tablePagination(optionsPaginationListRekap);
                     }
                 });
                 return false;

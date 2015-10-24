@@ -326,127 +326,16 @@
         $('#alergi').prop('disabled', false);
     }
     
-    //    /*
-    //     *mengambil data by filter limit
-    //     */
-    //    function getAllDataTrans(){
-    //        var tahun = $('#tahunAjaranData').val();
-    //        var triwulan = $('#triwulanData').val();
-    //        if(tahun.length && triwulan.length){
-    //            $.ajax({
-    //                type: "POST",
-    //                url: "<?php //echo site_url('bosk1/bosk1/getDataTrans')                    ?>",
-    //                data: {tahun:tahun, triwulan:triwulan},
-    //                dataType: 'json',
-    //                beforeSend: function(xhr) {
-    //                    showProgressBar('proses ambil data');
-    //                },
-    //                error: function(xhr, status) {
-    //                    hideProgressBar();
-    //                    alert(status);
-    //                },
-    //                success: function(response) {
-    //                    generateDataTable(response, true);
-    //                    hideProgressBar();
-    //                }
-    //            });
-    //        }
-    //    }
-    //
-    //    /*
-    //     *proses membuat table
-    //     **/
-    //    function generateDataTable(response, showMsg){
-    //        $('#dataTableTransaksi').html('');
-    //        if (response['data'] !== null) {
-    //            for(var i = 0; i < response['data'].length; i++){
-    //                var strRow = '<tr class="rowDataTable" id="rowDataTable'+response['data'][i]['ID_TRANS']+'" data-id-trans="'+response['data'][i]['ID_TRANS']+'">';
-    //                strRow += '<td>'+response['data'][i]['TGL']+'</td>';
-    //                strRow += '<td>'+response['data'][i]['NAMA_TRIWULAN']+'</td>';
-    //                strRow += '<td>'+response['data'][i]['NAMA_SUMBER_DANA']+'</td>';
-    //                strRow += '<td>'+response['data'][i]['JUMLAH_SISWA']+'</td>';
-    //                strRow += '<td>'+response['data'][i]['UANG_PER_SISWA']+'</td>';
-    //                strRow += '<td>'+response['data'][i]['NO_URUT_TERIMA']+'</td>';
-    //                strRow += '<td>'+response['data'][i]['NO_KODE_TERIMA']+'</td>';
-    //                strRow += '<td>'+response['data'][i]['URAIAN_TERIMA']+'</td>';
-    //                strRow += '<td>'+response['data'][i]['UANG_TERIMA']+'</td>';
-    //                strRow += '</tr>';
-    //                $('#dataTableTransaksi').append(strRow);
-    //            }
-    //        } else {
-    //            if(showMsg === true){
-    //                alert(response['message']);
-    //            }
-    //        }
-    //        //set pilih
-    //        var idTrans = $('#idTrans').val();
-    //        if(idTrans.length){
-    //            $('#dataTableTransaksi tr').removeClass('info');
-    //            $('#dataTableTransaksi #rowDataTable'+idTrans).addClass('info');
-    //        }
-    //    }
-    //
-    //    /*
-    //     *mengambil data transaksi by id transaksi
-    //     */
-    //    //    function getDataByidTrans(idTrans){
-    //    //        if(idTrans !== null){
-    //    //            $.ajax({
-    //    //                type: "POST",
-    //    //                url: "<?php //echo site_url('bosk1/bosk1/get_data_pasien_by_id')                    ?>",
-    //    //                data: {idTrans:idTrans},
-    //    //                dataType: 'json',
-    //    //                beforeSend: function(xhr) {
-    //    //                    showProgressBar('proses ambil data');
-    //    //                },
-    //    //                error: function(xhr, status) {
-    //    //                    hideProgressBar();
-    //    //                    alert(status);
-    //    //                },
-    //    //                success: function(response) {
-    //    //                    setDataTrans(response);
-    //    //                    hideProgressBar();
-    //    //                }
-    //    //            });
-    //    //        }else{
-    //    //            alert('Identitas data tidak diketahui');
-    //    //        }
-    //    //    }
-    //
-    //        /*
-    //         *set data from
-    //         */
-    //        function setDataTrans(response){
-    //            clearForm();
-    //            disableForm();
-    //            if(response['data'] !== null){
-    //                $('#idTrans').val(response['data']['ID_TRANS']);
-    //                $('#tanggal').val(response['data']['TGL']);
-    //                $('#tahunAjaran').val(response['data']['KODE_TAHUN']);
-    //                $('#triwulan').val(response['data']['KODE_TRIWULAN']);
-    //                $('#sumberDanaBos').val(response['data']['KODE_SUMBER_DANA']);
-    //                $('#jumlahSiswa').val(response['data']['JUMLAH_SISWA']);
-    //                $('#jumlahUangPerSiswa').val(response['data']['UANG_PER_SISWA']);
-    //                $('#noUrutTerima').val(response['data']['NO_URUT_TERIMA']);
-    //                $('#noKodeTerima').val(response['data']['NO_KODE_TERIMA']);
-    //                $('#uraianTerima').val(response['data']['URAIAN_TERIMA']);
-    //                $('#jumlahTerima').val(response['data']['UANG_TERIMA']);
-    //            }
-    //            $('#btnAdd').prop('disabled', false);
-    //            $('#btnEdit').prop('disabled', false);
-    //            $('#btnCancel').prop('disabled', true);
-    //            $('#btnSave').prop('disabled', true);
-    //        }
-    //        /*
-    //         *pilih data table
-    //         **/
-    //        $(document).on('click', '.rowDataTable', function(){
-    //            var idTrans = $(this).data('idTrans');
-    //            var idBaris = $(this).attr('id');
-    //            getDataByidTrans(idTrans);
-    //            $('#dataTableTransaksi tr').removeClass('info');
-    //            $('#dataTableTransaksi #'+idBaris).addClass('info');
-    //        });
+    /*
+     *pilih data table
+     **/
+    $(document).on('click', '.rowDataTable', function(){
+        var idTrans = $(this).data('idTrans');
+        var idBaris = $(this).attr('id');
+        getDataByidTrans(idTrans);
+        $('#dataTableTransaksi tr').removeClass('info');
+        $('#dataTableTransaksi #'+idBaris).addClass('info');
+    });
 
     function getDataByidTrans(idTrans){
         if(idTrans !== null){

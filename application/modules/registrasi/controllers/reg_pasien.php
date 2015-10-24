@@ -234,15 +234,15 @@ class Reg_pasien extends MY_Controller {
      * mengambil data transaksi berdasarkan filter
      */
 
-    function getDataTrans() {
+    function cari_list_pasien() {
         $data = array(
             'data' => NULL,
             'message' => NULL
         );
-        if (!empty($_POST['tahun']) && !empty($_POST['triwulan'])) {
-            $tahun = $_POST['tahun'];
-            $triwulan = $_POST['triwulan'];
-            $result = $this->bosk1_model->dataTransByFilter($tahun, $triwulan);
+        if (!empty($_POST['listNoRm']) && !empty($_POST['listNama'])) {
+            $noRM = $_POST['listNoRm'];
+            $nama = $_POST['listNama'];
+            $result = $this->reg_pasien_model->dataPasienByFilter($noRM, $nama);
             if ($result != NULL) {
                 $data['data'] = $result;
             } else {

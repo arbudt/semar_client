@@ -190,28 +190,25 @@ class Reg_pasien_model extends MY_Model {
      * mengambil data limit
      */
 
-    function dataTransByFilter($tahun, $triwulan) {
+    function dataPasienByFilter($noRM, $nama) {
+        $addWhere = '';
+        if (!empty($noRM)) {
+            $addWhere .= " AND `mpas_id` = '$id'";
+        }
+        if (!empty($nama)) {
+            $addWhere .= " AND `rag_nama` like '%$nama%' ";
+        }
         $query = $this->db->query("
-            SELECT 
-            A.k1_code ID_TRANS,
-            A.k1_triwulan_code KODE_TRIWULAN,
-            A.k1_donatur_code KODE_SUMBER_DANA,
-            A.k1_nns NSS,
-            A.k1_jumlah_siswa JUMLAH_SISWA,
-            A.k1_uang_per_siswa UANG_PER_SISWA,
-            DATE_FORMAT(A.k1_date, '%d/%m/%Y') TGL,
-            A.k1_no_urut NO_URUT_TERIMA,
-            A.k1_no_kode NO_KODE_TERIMA,
-            A.k1_uraian URAIAN_TERIMA,
-            A.k1_uang_terima UANG_TERIMA,
-            B.triwulan_name NAMA_TRIWULAN,
-            C.donatur_name NAMA_SUMBER_DANA
-            FROM trans_k1 A
-            JOIN master_triwulan B ON B.triwulan_code = A.k1_triwulan_code
-            JOIN master_donatur C ON C.donatur_code = A.k1_donatur_code
-            WHERE A.k1_tahun_code = '$tahun'
-            AND A.k1_triwulan_code = '$triwulan'
-            AND A.k1_status = 0
+            SELECT
+            `mpas_id`,
+            `mpas_nama
+            `mpas_jenis_kelamin`,
+            `mpas_tempat_lahir`,
+            `mpas_tanggal_lahir`,
+            `mpas_alamat`
+            FROM `mst_pasien` WHERE 1
+            FROM `mst_pasien`
+            WHERE 1
         ");
         if ($query->num_rows() > 0) {
             return $query->result();
