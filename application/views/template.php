@@ -116,67 +116,42 @@
                 </div>
             </div>
         </div>
-        <?php
-        if (!empty($previlages)) {
-        ?>
-            <!-- Menu -->
-            <div class="navbar-inner menuTop" style="max-height: 5px !important;">
-                <div class="container" style="max-height: 5px !important;">
-                    <a href="#" class="brand" data-toggle="popover" data-placement="bottom" data-content="<?php echo!empty($menuDescription) ? $menuDescription : ''; ?>" title="<?php echo!empty($menuTitle) ? $menuTitle : ''; ?>" onmouseover="showPopOver()" onmouseout="hidePopOver()"><?php echo!empty($menuTitle) ? $menuTitle : ''; ?></a
-                    <div class="nav-collapse collapse">
-                        <ul class="nav" id="menuBos">
-                            <li class="active">
-                                <a href="<? echo site_url(); ?>">Home</a>
-                            </li>
-                        <?php
-                        if (!empty($previlages)) {
-                            $parent = 0;
-                            $parentName = '';
-                            for ($i = 0; $i < count($previlages); $i++) {
-                                if ($previlages[$i]['kode_parent'] != $parent) {
-                                    $parent = $previlages[$i]['kode_parent'];
-                                    $parentName = $previlages[$i]['name_parent'];
-                                    if ($i > 0) {
-                                        echo '</ul>';
-                                        echo '</li>';
-                                    }
-                                    echo '<li class="dropdown">';
-                                    echo '<a id="drop' . $parent . '" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">' . $parentName . '<b class="caret"></b></a>';
-                                    echo '<ul class="dropdown-menu" role="menu" aria-labelledby="drop' . $parent . '">';
-                                }
-                                $menuName = $previlages[$i]['menu_name'];
-                                $menuUrl = $previlages[$i]['menu_url'];
-                                echo '<li role="presentation"><a role="menuitem" tabindex="-1" href="' . site_url($menuUrl) . '">' . $menuName . '</a></li>';
-                            }
-                            echo '</ul>';
-                            echo '</li>';
-                        }
-                        ?>
-                        <li class="">
-                            <a href="<? echo site_url('log/monitoring_dana'); ?>">Monitoring Dana</a>
+
+        <!-- Menu -->
+        <div class="navbar-inner menuTop" style="max-height: 5px !important;">
+            <div class="container" style="max-height: 5px !important;">
+                <a href="#" class="brand" data-toggle="popover" data-placement="bottom" data-content="<?php echo!empty($menuDescription) ? $menuDescription : ''; ?>" title="<?php echo!empty($menuTitle) ? $menuTitle : ''; ?>" onmouseover="showPopOver()" onmouseout="hidePopOver()"><?php echo!empty($menuTitle) ? $menuTitle : ''; ?></a
+                <div class="nav-collapse collapse">
+                    <ul class="nav" id="menuBos">
+                        <li class="active">
+                            <a href="<? echo site_url(); ?>">Home</a>
                         </li>
                         <li class="">
-                            <a href="<? echo site_url('login/login/prosesLogout'); ?>">Keluar</a>
+                            <a href="<? echo site_url('registrasi/reg_pasien'); ?>">Registrsi Pasien</a>
+                        </li>
+                        <li class="">
+                            <a href="<? echo site_url('registrasi/reg_poli'); ?>">Poliklinik</a>
+                        </li>
+                        <li class="">
+                            <a href="<? echo site_url('pelayanan/pelayanan'); ?>">Pelayanan</a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <?php
-                    }
-            ?>
-                </div>
 
-                <!-- loading proses (prosegress bar) -->
-                <div id="loadingProgress" class="modal hide loadingProgress" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-                    <div class="progress progress-striped">
-                        <div class="bar" style="width: 100%;" id="labelProgressBar">sedang diproses...</div>
-                    </div>
-                </div>
+        </div>
 
-                <!-- body -->
-                <div class="container" style="min-height: 380px; margin-top: 30px">
-                    <div class="row-fluid">
-                        <div class="span12">
+        <!-- loading proses (prosegress bar) -->
+        <div id="loadingProgress" class="modal hide loadingProgress" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+            <div class="progress progress-striped">
+                <div class="bar" style="width: 100%;" id="labelProgressBar">sedang diproses...</div>
+            </div>
+        </div>
+
+        <!-- body -->
+        <div class="container" style="min-height: 380px; margin-top: 75px">
+            <div class="row-fluid">
+                <div class="span12">
                     <?php
                     $this->load->view($page);
                     ?>
@@ -206,7 +181,7 @@
         <script type="text/javascript" src="<?php echo base_url() ?>assets/js/bootstrap-carousel.js"></script>
         <script type="text/javascript" src="<?php echo base_url() ?>assets/js/bootstrap-typeahead.js"></script>
         <script type="text/javascript" src="<?php echo base_url() ?>assets/js/bootstrap-affix.js"></script>
-<!--            <script type="text/javascript" src="<?php //echo base_url()       ?>assets/js/nagging-menu.js"></script>-->
+<!--            <script type="text/javascript" src="<?php //echo base_url()              ?>assets/js/nagging-menu.js"></script>-->
         <script type="text/javascript" src="<?php echo base_url() ?>assets/js/jqBootstrapValidation.js"></script>
         <script type="text/javascript" src="<?php echo base_url() ?>assets/js/jquery.tablePagination.0.5.min.js"></script>
         <script type="text/javascript" src="<?php echo base_url() ?>assets/js/bootstrap-datetimepicker.min.js"></script>
