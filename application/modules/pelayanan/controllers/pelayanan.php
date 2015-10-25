@@ -7,9 +7,10 @@ class Pelayanan extends MY_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model(
-                'pelayanan/pelayanan_model'
-        );
+        $this->load->model('pelayanan/pelayanan_model');
+        $this->load->model('registrasi/reg_poli_model');
+        $this->load->library('rest');
+        Requests::register_autoloader();
     }
 
     function index() {
@@ -18,6 +19,41 @@ class Pelayanan extends MY_Controller {
         $data['menuDescription'] = 'Pelayanan kunjungan poli';
 
         $this->load->view('template', $data);
+    }
+
+    /*
+     * mengambil satu data
+     */
+
+    function get_antrian_by_poli() {
+        $data = array(
+            'data' => NULL,
+            'message' => NULL,
+            'dataRiwayat' => NULL,
+            'dataDiagnosa' => NULL
+        );
+
+        if (!empty($_POST['poli'])) {
+            $poli = $_POST['poli'];
+            $tgl = date('d-m-Y');
+            $idKunjungan = $this->pelayanan_model->getAntrianBerikutnyaByPoli($poli, $tgl);
+            if (!empty($idKunjungan)) {
+                $dataKunj = $this->reg_poli_model->dataKunjunganById($idKunjungan);
+                if ($data != NULL) {
+                    $data['data'] = $dataKunj;
+                    $noRm = $dataKunj->mpas_id;
+                    $data['dataRiwayat'] = $this->pelayanan_model->getDataRiwatatByRm($noRm);
+                    $data['dataDiagnosa'] = $this->pelayanan_model->dataDiagnosaByIdKunj($idKunjungan);
+                } else {
+                    $data['message'] = 'Tidak ada data ditemukan kunjungan';
+                }
+            } else {
+                $data['message'] = 'Tidak ada data ditemukan';
+            }
+        } else {
+            $data['message'] = 'Harus memilih Poli';
+        }
+        echo json_encode($data);
     }
 
     /*
@@ -31,17 +67,14 @@ class Pelayanan extends MY_Controller {
             'idTrans' => NULL
         );
         if (!empty($_POST)) {
-            $trans_kunjungan = array(
-                'tkunj_id' => !empty($_POST['idKunjungan']) ? $_POST['idKunjungan'] : '',
-                'mpas_id' => !empty($_POST['noRm']) ? $_POST['noRm'] : '',
-                'mpoli_id' => !empty($_POST['poli']) ? $_POST['poli'] : '',
-                'tkunj_tanggal' => !empty($_POST['tanggalPeriksa']) ? $_POST['tanggalPeriksa'] : '',
-                'mdok_id' => !empty($_POST['dokter']) ? $_POST['dokter'] : '',
-                'mcb_id' => !empty($_POST['caraBayar']) ? $_POST['caraBayar'] : '',
-                'tkunj_no_peserta' => !empty($_POST['noPeserta']) ? $_POST['noPeserta'] : '',
-                'tkunj_keterangan' => !empty($_POST['keterangan']) ? $_POST['keterangan'] : ''
+            $trans_diagnosa = array(
+                'tdiag_id' => !empty($_POST['idTransDiagnosa']) ? $_POST['idTransDiagnosa'] : '',
+                'tdiag_nama' => !empty($_POST['namaDiagnosa']) ? $_POST['namaDiagnosa'] : '',
+                'tdiag_keterangan' => !empty($_POST['keteranganDiagnosa']) ? $_POST['keteranganDiagnosa'] : '',
+                'mpas_id' => !empty($_POST['noRmDiagnosa']) ? $_POST['noRmDiagnosa'] : '',
+                'tkunj_id' => !empty($_POST['idKunjDiagnosa']) ? $_POST['idKunjDiagnosa'] : ''
             );
-            $send = $this->reg_poli_model->simpanData($trans_kunjungan);
+            $send = $this->pelayanan_model->simpanData($trans_diagnosa);
             if ($send['status'] == TRUE) {
                 $data['status'] = TRUE;
                 $data['idTrans'] = $send['idTrans'];
@@ -55,42 +88,17 @@ class Pelayanan extends MY_Controller {
     }
 
     /*
-     * mengambil data transaksi berdasarkan filter
-     */
-
-    function cari_list_kunjungan() {
-        $data = array(
-            'data' => NULL,
-            'message' => NULL
-        );
-        if (!empty($_POST['listPoliKunjungan']) || !empty($_POST['listNoRmKunjungan']) || !empty($_POST['listNamaKunjungan'])) {
-            $poli = $_POST['listPoliKunjungan'];
-            $noRM = $_POST['listNoRmKunjungan'];
-            $nama = $_POST['listNamaKunjungan'];
-            $result = $this->reg_poli_model->dataKunjunganByFilter($poli, $noRM, $nama);
-            if ($result != NULL) {
-                $data['data'] = $result;
-            } else {
-                $data['message'] = 'Tidak ada data ditemukan';
-            }
-        } else {
-            $data['message'] = 'Harus memasukkan filter';
-        }
-        echo json_encode($data);
-    }
-
-    /*
      * mengambil satu data
      */
 
-    function get_data_kunjungan_by_id() {
+    function get_data_diagnosa_by_id() {
         $data = array(
             'data' => NULL,
             'message' => NULL
         );
         if (!empty($_POST['idTrans'])) {
             $idTrans = $_POST['idTrans'];
-            $result = $this->reg_poli_model->dataKunjunganById($idTrans);
+            $result = $this->pelayanan_model->dataDiagnosaByIdTrans($idTrans);
             if ($result != NULL) {
                 $data['data'] = $result;
             } else {
@@ -99,6 +107,85 @@ class Pelayanan extends MY_Controller {
         } else {
             $data['message'] = 'identitas harus dikirim';
         }
+        echo json_encode($data);
+    }
+
+    function get_data_rs() {
+        $data = array(
+            'data' => NULL,
+            'count' => 0,
+            'message' => NULL
+        );
+        if (!empty($_POST['noRm'])) {
+            $noRmLocal = $_POST['noRm'];
+            $url = 'http://localhost/semar_server/index.php/api/rekam_medis/getrumahsakit/' . $noRmLocal;
+            $header = array(
+                'Accept' => 'application/json'
+            );
+            $request = Requests::get($url, $header);
+            if (!empty($request->status_code)) {
+                if ($request->status_code == '200') {
+                    if (!empty($request->body)) {
+                        $temp = json_decode($request->body);
+                        if (!empty($temp->data)) {
+                            $data['data'] = $temp->data;
+                        } else {
+                            $data['message'] = 'Tidak ada respons data dari server';
+                        }
+                    } else {
+                        $data['message'] = 'Tidak ada respons dari server';
+                    }
+                } else {
+                    $data['message'] = 'Proses gagal';
+                }
+            } else {
+                $data['message'] = 'Terjadi masalah dengan format data';
+            }
+        } else {
+            $data['message'] = 'identitas harus dikirim';
+        }
+        $data['count'] = count($data['data']);
+        echo json_encode($data);
+    }
+
+    function proses_ambil_data_riwayat() {
+        $data = array(
+            'data' => NULL,
+            'count' => 0,
+            'message' => NULL
+        );
+        if (!empty($_POST['ambilIdRs'])) {
+
+            $url = 'http://localhost/semar_server/index.php/api/rekam_medis/getpostrekamedik';
+            $header = array(
+                'Accept' => 'application/json'
+            );
+            $data['mrs_id'] = $_POST['ambilIdRs'];
+            $data['tkunj_no_rm'] = $_POST['ambilNoRm'];
+
+            $request = Requests::post($url, $header, $data);
+            if (!empty($request->status_code)) {
+                if ($request->status_code == '200') {
+                    if (!empty($request->body)) {
+                        $temp = json_decode($request->body);
+                        if (!empty($temp->data)) {
+                            $data['data'] = $temp->data;
+                        } else {
+                            $data['message'] = 'Tidak ada respons data dari server';
+                        }
+                    } else {
+                        $data['message'] = 'Tidak ada respons dari server';
+                    }
+                } else {
+                    $data['message'] = 'Proses gagal';
+                }
+            } else {
+                $data['message'] = 'Terjadi masalah dengan format data';
+            }
+        } else {
+            $data['message'] = 'identitas harus dikirim';
+        }
+        $data['count'] = count($data['data']);
         echo json_encode($data);
     }
 

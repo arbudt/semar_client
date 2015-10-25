@@ -4,12 +4,13 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 class Reg_pasien extends MY_Controller {
+
     private $REST_PASIEN_SERVER = "http://localhost/semar_server/index.php/api/pasien/getpasien";
 
     function __construct() {
         parent::__construct();
         $this->load->model('registrasi/reg_pasien_model');
-                        $this->load->library('rest');
+        $this->load->library('rest');
         Requests::register_autoloader();
     }
 
@@ -22,40 +23,78 @@ class Reg_pasien extends MY_Controller {
         $this->load->view('template', $data);
     }
 
-    public function get_pasien($no_rm_nasional=''){
-        
-        $url = $this->REST_PASIEN_SERVER . '/' .$no_rm_nasional;
-                $header = array(
+    public function get_pasien($no_rm_nasional='') {
+        $url = $this->REST_PASIEN_SERVER . '/' . $no_rm_nasional;
+        $header = array(
             'Accept' => 'application/json'
         );
-         $data = Requests::get($url, $header);
-         return $data;
+
+
+        $request = Requests::get($url, $header);
+        $data = NULL;
+        if (!empty($request->status_code)) {
+            if ($request->status_code == '200') {
+                if (!empty($request->body)) {
+                    $temp = json_decode($request->body);
+                    if (!empty($temp->pasien)) {
+                        $data = $temp->pasien;
+                    }
+                } else {
+                    $data['message'] = 'Tidak ada respons dari server';
+                }
+            } else {
+                $data['message'] = 'Proses gagal';
+            }
+        } else {
+            $data['message'] = 'Terjadi masalah dengan format data';
+        }
+
+        return $data;
     }
-    
-    
-    public function kirim_pasien($mpas_id='', $mrs_id='', $tkunj_norm=''){
-                        $headers = array(
+
+    public function kirim_pasien($mpas_id='', $mrs_id='', $tkunj_norm='') {
+        $headers = array(
             'Accept' => 'application/json'
         );
-          $mpas_id = 1;
-          $mrs_id = 2;
-          $tkunj_norm = 3;
-                        $url = 'http://localhost/semar_server/index.php/api/pasien/save_pasien';
-         $data = array(
-           'mpas_id' => $mpas_id,
-             'mrs_id' => $mrs_id,
-             'tkunj_no_rm' => $tkunj_norm
-         );
-         print_r($url);
+        $url = 'http://localhost/semar_server/index.php/api/pasien/save_pasien';
+        $data = array(
+            'mpas_id' => $mpas_id,
+            'mrs_id' => $mrs_id,
+            'tkunj_no_rm' => $tkunj_norm
+        );
         $status = Requests::post($url, $headers, $data);
-        print_r($status);die;
+//        print_r($status);
     }
 
     /*
-     *
+     * mengambil satu data
      */
 
-    
+    function proses_ambil_data_on_line() {
+        $data = array(
+            'data' => NULL,
+            'message' => NULL,
+            'optionsKab' => NULL,
+            'optionskec' => NULL,
+            'optionsKel' => NULL,
+        );
+        if (!empty($_POST['noRmNasional'])) {
+            $noRmNasional = $_POST['noRmNasional'];
+            $result = $this->get_pasien($noRmNasional);
+            if ($result != NULL) {
+                $data['data'] = $result;
+                $data['optionsKab'] = $this->options_kabupaten_by_prop($result->rpro_id);
+                $data['optionskec'] = $this->options_kecamatan_by_kab($result->rkab_id);
+                $data['optionsKel'] = $this->options_kelurahan_by_kec($result->rkec_id);
+            } else {
+                $data['message'] = 'Tidak ada data ditemukan';
+            }
+        } else {
+            $data['message'] = 'identitas harus dikirim';
+        }
+        echo json_encode($data);
+    }
+
     public function get_options_kabupaten_by_prop() {
 
         $respon = '';
@@ -253,6 +292,9 @@ class Reg_pasien extends MY_Controller {
                 $data['status'] = TRUE;
                 $data['noRm'] = $send['mpas_id'];
                 $data['message'] = 'Proses simpan berhasil';
+                if (!empty($_POST['isOnLine']) && empty($_POST['noRm']) && !empty($_POST['noRmOnline'])) {
+                    $this->kirim_pasien($_POST['noRmOnline'], '1', $data['noRm']);
+                }
             } else {
                 $data['status'] = FALSE;
                 $data['message'] = 'Proses simpan gagal';
@@ -314,11 +356,11 @@ class Reg_pasien extends MY_Controller {
         echo json_encode($data);
     }
 
-    public function data_test(){
+    public function data_test() {
         echo 'sukses';
     }
 
-    public function test(){
+    public function test() {
         echo dropDownTest();
     }
 

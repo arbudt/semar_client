@@ -12,23 +12,25 @@
  * @author ziaha
  */
 require APPPATH . 'libraries/REST_Controller.php';
-class rekammedis_client extends REST_Controller{
+
+class rekammedis_client extends REST_Controller {
+
     //put your code here
-    
+
     function __construct() {
         parent::__construct();
         $this->load->model('rekammedis_client_model');
-        
-        }
+    }
 
-        function get_rekammedis_get($no_rm = ''){
-            $q = $this->rekammedis_client_model->get($no_rm);
-            if(empty($q)){
-                $data['status'] = 0;
-            }else{
-                $data['status'] = 1;
-                $data['rekammedis'] = $q;
-            }
-            $this->response($data);
+    function get_rekammedis_get($no_rm = '') {
+        $q = $this->rekammedis_client_model->getData($no_rm);
+        if (empty($q)) {
+            $data['status'] = 0;
+        } else {
+            $data['status'] = 1;
+            $data['data'] = $q;
         }
+        $this->response($data);
+    }
+
 }

@@ -11,8 +11,14 @@
 
 <!-- HTML botton TOP -->
 <div class="row-fluid" style="margin-top: -8px;">
-    <div class="btn-group">
+    <div class="span2">
         <button type="button" id="btnListData" class="btn btn-info"><i class="icon-search"></i>List Data Pasien</button>
+    </div>
+    <div class="span4">
+        <form method="POST" id="formAmbilOnline" class="form form-inline">
+            <input type="text" name="noRmNasional" id="noRmNasional" required value="" placeholder="no Registrasi On-line"/>
+            <button type="submit" id="btnAmbilRegOnline" class="btn btn-info"><i class="icon-download"></i>Ambil Reg Online</button>
+        </form>
     </div>
 </div>
 <br>
@@ -22,6 +28,8 @@
 
 <div class="row-fluid">
     <form class="form well" method="POST" id="formRegistrasi">
+        <input type="hidden" name="isOnLine" id="isOnLine" value="" class="isOnLine" />
+        <input type="hidden" name="noRmOnline" id="noRmOnline" value="" class="noRmOnline" />
         <div class="row-fluid">
             <div class="span6">
                 <table>
@@ -255,11 +263,43 @@
         $('#btnCancel').prop('disabled', true);
         $('#btnSave').prop('disabled', true);
     });
+
+    $(document).ready(function() {
+        $('#formAmbilOnline').validate({
+            submitHandler: function(form) {
+                $.ajax({
+                    type: "POST",
+                    url: "<?php echo site_url('registrasi/reg_pasien/proses_ambil_data_on_line'); ?>",
+                    data: $('#formAmbilOnline').serialize(),
+                    dataType: 'json',
+                    beforeSend: function(xhr) {
+                        showProgressBar('proses simpan');
+                    },
+                    error: function(xhr, status) {
+                        hideProgressBar();
+                        bootbox.alert(status);
+                    },
+                    success: function(response) {
+                        hideProgressBar();
+                        if (response['data']) {
+                            var rmNasional = $('#noRmNasional').val();
+                            setDataTrans(response, 1, rmNasional);
+                        } else {
+                            bootbox.alert(response['message']);
+                        }
+                    }
+                });
+                return false;
+            }
+        });
+    });
 </script>
 
 <!-- JS function Content -->
 <script>
     function clearForm(){
+        $('#isOnLine').val('0');
+        $('#noRmOnline').val('');
         $('#noRm').val('');
         $('#namaPasien').val('');
         $('#tempatLahir').val('');
@@ -362,7 +402,7 @@
     /*
      *set data from
      */
-    function setDataTrans(response){
+    function setDataTrans(response, online, rmOnline){
         clearForm();
         disableForm();
         if(response['data'] !== null){
@@ -388,10 +428,21 @@
             $('#pekerjaan').val(response['data']['rpek_id']);
             $('#alergi').val(response['data']['mpas_alergi']);
         }
-        $('#btnAdd').prop('disabled', false);
-        $('#btnEdit').prop('disabled', false);
-        $('#btnCancel').prop('disabled', true);
-        $('#btnSave').prop('disabled', true);
+        if(online === 1){
+            enableForm();
+            $('#isOnLine').val('1');
+            $('#noRmOnline').val(rmOnline);
+            $('#noRm').val('');
+            $('#btnAdd').prop('disabled', true);
+            $('#btnEdit').prop('disabled', true);
+            $('#btnCancel').prop('disabled', false);
+            $('#btnSave').prop('disabled', false);
+        }else{
+            $('#btnAdd').prop('disabled', false);
+            $('#btnEdit').prop('disabled', false);
+            $('#btnCancel').prop('disabled', true);
+            $('#btnSave').prop('disabled', true);
+        }
     }
 </script>
 

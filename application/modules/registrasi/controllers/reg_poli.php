@@ -36,7 +36,7 @@ class Reg_poli extends MY_Controller {
                 'tkunj_id' => !empty($_POST['idKunjungan']) ? $_POST['idKunjungan'] : '',
                 'mpas_id' => !empty($_POST['noRm']) ? $_POST['noRm'] : '',
                 'mpoli_id' => !empty($_POST['poli']) ? $_POST['poli'] : '',
-                'tkunj_tanggal' => !empty($_POST['tanggalPeriksa']) ? $_POST['tanggalPeriksa'] : '',
+                'tkunj_tanggal' => !empty($_POST['tanggalPeriksa']) ? dateReverse($_POST['tanggalPeriksa']) : '',
                 'mdok_id' => !empty($_POST['dokter']) ? $_POST['dokter'] : '',
                 'mcb_id' => !empty($_POST['caraBayar']) ? $_POST['caraBayar'] : '',
                 'tkunj_no_peserta' => !empty($_POST['noPeserta']) ? $_POST['noPeserta'] : '',
